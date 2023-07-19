@@ -1,0 +1,34 @@
+import { NotNull } from "sequelize-typescript";
+import { Model, InferAttributes, InferCreationAttributes, DataTypes, CreationOptional } from "sequelize";
+import { sequelize } from "../configs/db.config";
+
+interface UserModel extends Model<InferAttributes<UserModel>, InferCreationAttributes<UserModel>> {
+  id: CreationOptional<number>;
+  name: string;
+  username: string;
+  password: string;
+}
+
+export const User = sequelize.define<UserModel>(
+  "User",
+  {
+    id: {
+      primaryKey: true,
+      autoIncrement: true,
+      type: DataTypes.INTEGER,
+    },
+    name: {
+      allowNull: false,
+      type: DataTypes.STRING,
+    },
+    username: {
+      allowNull: false,
+      type: DataTypes.STRING,
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+  },
+  { tableName: "users", paranoid: true }
+);
