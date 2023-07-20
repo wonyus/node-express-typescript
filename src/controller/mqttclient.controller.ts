@@ -1,12 +1,33 @@
 import { Request, Response } from "express";
-
-import { MqttClients } from "../model/mqtt_client.model";
 import { IRegisterClient } from "../interface/mqttclient.interface";
+import { CreateDevice, FindClientByUserId, GetClientConnectByUser } from "../services/mqtt_client.service";
+import { decodeJWT } from "../utils/JWT";
 
-export async function RegisterClient(req: Request, res: Response) {
+export async function RegisterClient(req: Request<never, never, IRegisterClient, never, never>, res: Response) {
+  const decode = decodeJWT(String(req.headers?.authorization).split(" ")[1]);
+  const regisFormdata: IRegisterClient = req.body;
+  const resData = await CreateDevice(decode.userId, regisFormdata);
+  if (resData?.error) {
+    return res.status(500).json({ error: resData?.error });
+  }
+  return res.status(201).json({ message: "success", result: resData });
+}
+
+export async function GetClientStatusByUser(req: Request, res: Response) {
   const userId: number = Number(req.headers.authorization);
-  const body: IRegisterClient = req.body;
-  const client = await MqttClients.create({ uid: userId, ...body });
+  const username: string = "nodelocal";
+  const resClientConn = await GetClientConnectByUser(username);
+  const resClientAll: any = await FindClientByUserId(userId);
 
-  return res.status(201).json({ message: "success", result: client });
+  if (resClientAll.error) {
+    return res.status(500).json({ error: resClientAll?.error });
+  }
+
+  const result: { client_id: string; connected: boolean }[] = [];
+  const connected: string[] = resClientConn.data.data.map((val: any) => val.clientid);
+
+  resClientAll.forEach((valAll: any) => {
+    result.push({ client_id: valAll.client_id, connected: connected.includes(valAll.client_id) });
+  });
+  return res.status(200).json({ message: "success", result: result });
 }

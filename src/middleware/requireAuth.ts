@@ -1,10 +1,14 @@
 import { Request, Response, NextFunction } from "express";
+import { decodeJWT, validateJWT } from "../utils/JWT";
 
 function RequireAuth(req: Request, res: Response, next: NextFunction) {
-  if (req.headers.authorization) {
-    return next();
+  const token: string = String(req.headers.authorization).split(" ")[1];
+  const decode = decodeJWT(token);
+  const validate = validateJWT(token, decode);
+  if (validate == null) {
+    return res.status(401).json({ status: "success", message: "UnAuthorized" });
   }
-  return res.status(401).json({ status: "success", message: "UnAuthorized" });
+  return next();
 }
 
 export default RequireAuth;

@@ -26,6 +26,7 @@ export const MqttClients = sequelize.define<MqttClientModel>(
       },
     },
     client_id: {
+      unique: true,
       type: DataTypes.STRING,
     },
     type: {
@@ -38,4 +39,4 @@ export const MqttClients = sequelize.define<MqttClientModel>(
   { tableName: "mqtt_client", paranoid: true }
 );
 
-MqttClients.belongsTo(User, { foreignKey: "id" });
+MqttClients.belongsTo(User, { foreignKey: "uid" });
