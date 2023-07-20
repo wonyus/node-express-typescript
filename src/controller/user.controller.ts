@@ -73,10 +73,10 @@ export async function GetUserInfo(req: Request, res: Response) {
 }
 
 export async function FindClientByUserIds(req: Request, res: Response) {
-  const userId: string = req.headers?.authorization || "";
+  const decode = decodeJWT(String(req.headers?.authorization).split(" ")[1]);
   const ClientId = req.body.clientId;
 
-  const client = await FindOneClientByUserId(userId, ClientId);
+  const client = await FindOneClientByUserId(decode.userId, ClientId);
   if (client == null) {
     return res.status(404).json({ message: "not found", result: client });
   }

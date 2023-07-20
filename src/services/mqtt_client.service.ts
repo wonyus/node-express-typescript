@@ -21,6 +21,8 @@ export async function GetClientConnectByUser(username: string) {
 }
 
 export async function FindClientByUserId(userId: number) {
+  console.log(userId);
+
   try {
     const client = await MqttClients.findAll({ where: { uid: userId } });
     return client;
