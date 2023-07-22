@@ -5,6 +5,7 @@ import * as fs from "fs";
 import { server_port } from "./src/configs/constant";
 import { APILogger } from "./src/logger/api.loggers";
 import { sync } from "./src/model";
+const morgan = require("morgan");
 
 const app: Express = express();
 const logger = new APILogger();
@@ -14,6 +15,7 @@ const swaggerData: any = fs.readFileSync(swaggerFile, "utf8");
 const customCss: any = fs.readFileSync(process.cwd() + "/src/swagger/swagger.css", "utf8");
 const swaggerDocument = JSON.parse(swaggerData);
 
+app.use(morgan(":method :url :status :res[content-length] - :response-time ms"));
 app.use(router);
 app.get("/", (req: Request, res: Response) => {
   res.send("Express + TypeScript Server");
@@ -31,6 +33,6 @@ sync().then(() => {
   const server = app.listen(server_port, () => {
     const addr = server.address();
     const bind = typeof addr === "string" ? `pipe ${addr}` : `${addr?.port}`;
-    logger.info(`⚡️[server]: Server is running at http://localhost:${bind}`, null);
+    logger.info(`⚡️[server]: Server is running at http://localhost:${bind}`);
   });
 });

@@ -57,11 +57,12 @@ export async function SignIn(req: Request, res: Response) {
   if (!validate) {
     return res.status(500).json({ error: "user or password invalid" });
   }
-
+  delete userRes.dataValues.password;
   //sign jtw
   const signJwt = generateJWT(userRes);
   return res.status(201).json({ message: "success", result: { user: userRes, token: signJwt } });
 }
+
 export async function GetUserInfo(req: Request, res: Response) {
   const decode = decodeJWT(String(req.headers?.authorization).split(" ")[1]);
 

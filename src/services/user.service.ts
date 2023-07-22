@@ -67,7 +67,10 @@ export async function CreateUser(formdata: ICreateUserReq) {
 
 export async function SignInUser(formData: ISignInUserReq) {
   try {
-    const response = await User.findOne({ where: { username: formData.username } });
+    const response = await User.findOne({
+      attributes: ["id", "name", "username", "password"],
+      where: { username: formData.username },
+    });
     return response;
   } catch (error: any) {
     return { error: error.parent.detail };
@@ -75,7 +78,7 @@ export async function SignInUser(formData: ISignInUserReq) {
 }
 
 export async function FindOneUser(username: string) {
-  const response = await User.findOne({ where: { username: username } });
+  const response = await User.findOne({ attributes: ["id", "name", "username"], where: { username: username } });
   return response;
 }
 

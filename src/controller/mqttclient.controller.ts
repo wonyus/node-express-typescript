@@ -15,8 +15,7 @@ export async function RegisterClient(req: Request<never, never, IRegisterClient,
 
 export async function GetClientStatusByUser(req: Request, res: Response) {
   const decode = decodeJWT(String(req.headers?.authorization).split(" ")[1]);
-  const username: string = "nodelocal";
-  const resClientConn = await GetClientConnectByUser(username);
+  const resClientConn = await GetClientConnectByUser(decode.username);
   const resClientAll: any = await FindClientByUserId(decode.userId);
 
   if (resClientAll.error) {
