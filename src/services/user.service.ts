@@ -2,50 +2,10 @@ import { Response } from "express";
 import API from "../configs/axios";
 import { MqttClients } from "../model/mqtt_client.model";
 import { User } from "../model/user.model";
-
-export interface ICreateClientReq {
-  user_id: string;
-  password: string;
-}
-export interface ICreateClientRes {
-  is_superuser?: boolean;
-  user_id: string;
-}
-export interface ICreateUserReq {
-  name: string;
-  username: string;
-  password: string;
-}
-
-export interface ISignInUserReq {
-  username: string;
-}
+import { ICreateUserReq, ICreateClientReq, ICreateClientRes } from "../interface/user.interface";
+import { IPublishReq, IPublishRes } from "../interface/publish.interface";
 
 type ICreateUserRes = { is_superuser: boolean; user_id: string };
-
-type payloadEncode = "plain";
-
-export interface IPublishReq {
-  payload_encoding?: payloadEncode;
-  topic: string;
-  qos: number;
-  payload: string;
-  retain: boolean;
-  // properties?: {
-  //   payload_format_indicator: number;
-  //   message_expiry_interval: number;
-  //   response_topic: string;
-  //   correlation_data: string;
-  //   user_properties: {
-  //     application: string;
-  //   };
-  //   content_type: string;
-  // };
-}
-
-export interface IPublishRes {
-  id: string;
-}
 
 export async function FindOneClientByUserId(userId: string, clientId: string) {
   const client = await MqttClients.findOne({ where: { uid: userId, client_id: clientId } });
@@ -65,11 +25,11 @@ export async function CreateUser(formdata: ICreateUserReq) {
   }
 }
 
-export async function SignInUser(formData: ISignInUserReq) {
+export async function SignInUser(username: string) {
   try {
     const response = await User.findOne({
       attributes: ["id", "name", "username", "password"],
-      where: { username: formData.username },
+      where: { username: username },
     });
     return response;
   } catch (error: any) {

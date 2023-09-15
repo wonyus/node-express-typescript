@@ -3,17 +3,15 @@ import {
   CreateClient,
   CreateUser,
   FindOneClientByUserId,
-  IPublishReq,
   Publish,
   PublishBulk,
   SignInUser,
-  ICreateClientReq,
-  ICreateUserReq,
-  ISignInUserReq,
   FindOneUser,
 } from "../services/user.service";
 import { decodeJWT, generateJWT } from "../utils/JWT";
 import { encryptPassword, validatePassword } from "../utils/bcrypt";
+import { ICreateUserReq, ICreateClientReq, ISignInUserReq } from "../interface/user.interface";
+import { IPublishReq } from "../interface/publish.interface";
 
 export async function Signup(req: Request, res: Response) {
   // encryptPassword
@@ -44,16 +42,17 @@ export async function Signup(req: Request, res: Response) {
 export async function SignIn(req: Request, res: Response) {
   const userFormData: ISignInUserReq = {
     username: String(req.body.username),
+    password: String(req.body.password),
   };
 
   //get user
-  const userRes: any = await SignInUser(userFormData);
+  const userRes: any = await SignInUser(userFormData.username);
   if (userRes?.error) {
     return res.status(500).json({ error: "user or password invalid" });
   }
 
   //validate password
-  const validate = await validatePassword(String(req.body.password), userRes.password);
+  const validate = await validatePassword(userFormData.password, userRes.password);
   if (!validate) {
     return res.status(500).json({ error: "user or password invalid" });
   }
