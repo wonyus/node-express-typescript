@@ -7,7 +7,7 @@ export class APILogger {
 
   constructor() {
     const env = process.env.NODE_ENV || "development";
-    const logDir = "log";
+    const logDir = "logs";
     const pathLabel = path.basename(process.mainModule.filename);
 
     // Create the log directory if it does not exist
