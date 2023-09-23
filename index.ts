@@ -10,19 +10,29 @@ const morgan = require("morgan");
 const app: Express = express();
 const logger = new APILogger();
 
-const swaggerFile: any = process.cwd() + "/src/swagger/swagger.json";
-const swaggerData: any = fs.readFileSync(swaggerFile, "utf8");
-const customCss: any = fs.readFileSync(process.cwd() + "/src/swagger/swagger.css", "utf8");
-const swaggerDocument = JSON.parse(swaggerData);
-
-app.use(morgan(":method :url :status :res[content-length] - :response-time ms"));
+app.use(
+  morgan(":method :url :status :res[content-length] - :response-time ms")
+);
 app.use(router);
 app.get("/", (req: Request, res: Response) => {
   res.send("Express + TypeScript Server");
 });
 
 // swagger docs
-app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument, undefined, undefined, customCss));
+if (process.env.NODE_ENV != "production") {
+  const swaggerFile: any = process.cwd() + "/src/swagger/swagger.json";
+  const swaggerData: any = fs.readFileSync(swaggerFile, "utf8");
+  const customCss: any = fs.readFileSync(
+    process.cwd() + "/src/swagger/swagger.css",
+    "utf8"
+  );
+  const swaggerDocument = JSON.parse(swaggerData);
+  app.use(
+    "/api/docs",
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerDocument, undefined, undefined, customCss)
+  );
+}
 
 // handle undefined routes
 app.use("*", (req, res, next) => {

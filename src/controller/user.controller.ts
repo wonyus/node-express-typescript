@@ -35,6 +35,9 @@ export async function Signup(req: Request, res: Response) {
   }
   //create client to emqx
   const clientRes = await CreateClient(clientFormData);
+  if (userRes?.error) {
+    return res.status(500).json({ error: "Bad Request", message: clientRes?.data });
+  }
 
   return res.status(201).json({ message: "success", result: { user: userRes, client: clientRes.data } });
 }
