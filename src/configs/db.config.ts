@@ -15,7 +15,7 @@ export const sequelize = new Sequelize(DB_URL, {
     idle: 5000,
   },
   dialectOptions: {
-    ssl: true,
+    ssl: false,
     native: true,
     useUTC: false,
   },

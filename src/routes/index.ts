@@ -1,7 +1,7 @@
 import express, { Router } from "express";
 import test from "./test";
 import UserRoute from "./user";
-import MqttClientRoute from "./mqttclient";
+import MqttClientRoute from "./mqttClient";
 import RequireAuth from "../middleware/requireAuth";
 
 const router = Router();

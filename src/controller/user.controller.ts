@@ -1,17 +1,19 @@
 import { Request, Response } from "express";
 import {
-  CreateClient,
   CreateUser,
   FindOneClientByUserId,
   Publish,
   PublishBulk,
   SignInUser,
+  GetUserById,
   FindOneUser,
+  ChangePassword,
 } from "../services/user.service";
 import { decodeJWT, generateJWT } from "../utils/JWT";
 import { encryptPassword, validatePassword } from "../utils/bcrypt";
-import { ICreateUserReq, ICreateClientReq, ISignInUserReq } from "../interface/user.interface";
+import { IChangePasswordUserReq, IChangePasswordUserSrv, ICreateUserReq, ISignInUserReq } from "../interface/user.interface";
 import { IPublishReq } from "../interface/publish.interface";
+import { CreateMqttUser } from "../services/mqttUser.service";
 
 export async function Signup(req: Request, res: Response) {
   // encryptPassword
@@ -22,10 +24,7 @@ export async function Signup(req: Request, res: Response) {
     name: String(req.body.name),
     username: String(req.body.username),
     password: password,
-  };
-  const clientFormData: ICreateClientReq = {
-    user_id: String(req.body.username),
-    password: String(req.body.password),
+    is_superuser: Boolean(req.body.is_superuser),
   };
 
   //create user to DB
@@ -33,13 +32,14 @@ export async function Signup(req: Request, res: Response) {
   if (userRes?.error) {
     return res.status(500).json({ error: "Bad Request", message: userRes?.error });
   }
-  //create client to emqx
-  const clientRes = await CreateClient(clientFormData);
-  if (userRes?.error) {
-    return res.status(500).json({ error: "Bad Request", message: clientRes?.data });
+
+  //create mqtt user to DB
+  const mqttUserRes: any = await CreateMqttUser(userRes.id, userFormData);
+  if (mqttUserRes?.error) {
+    return res.status(500).json({ error: "Bad Request", message: userRes?.error });
   }
 
-  return res.status(201).json({ message: "success", result: { user: userRes, client: clientRes.data } });
+  return res.status(201).json({ message: "success", result: { user: userRes } });
 }
 
 export async function SignIn(req: Request, res: Response) {
@@ -119,4 +119,32 @@ export async function TestSignPass(req: Request, res: Response) {
   const password: string = await encryptPassword(req.body.password);
 
   return res.status(200).json({ message: "success", result: password });
+}
+
+export async function ChangePasswordUser(req: Request, res: Response) {
+  //Get data from req
+  const decode = decodeJWT(String(req.headers?.authorization).split(" ")[1]);
+  const formData: IChangePasswordUserReq = req.body;
+
+  //Get User info
+  const user: any = await GetUserById(decode.userId);
+
+  //validate password
+  const validate = await validatePassword(formData.old_password, user.password);
+  if (!validate) {
+    return res.status(500).json({ error: "user or password invalid" });
+  }
+
+  //Process
+  const new_password = await encryptPassword(formData.new_password);
+  const mockData: IChangePasswordUserSrv = { uid: decode.uid, new_password: new_password };
+  const result = await ChangePassword(mockData);
+
+  //validate and response
+  if (result.error) {
+    return res.status(500).json({ error: result?.error });
+  }
+
+  //Response
+  return res.status(200).json({ message: "success", result: result });
 }

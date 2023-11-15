@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { IRegisterClient } from "../interface/mqttclient.interface";
-import { CreateDevice, FindClientByUserId, GetClientConnectByUser } from "../services/mqtt_client.service";
+import { CreateDevice, FindClientByUserId, GetClientConnectByUser } from "../services/mqttClient.service";
 import { decodeJWT } from "../utils/JWT";
 
 export async function RegisterClient(req: Request, res: Response) {

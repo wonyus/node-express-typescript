@@ -10,10 +10,8 @@ const morgan = require("morgan");
 const app: Express = express();
 const logger = new APILogger();
 
-app.use(
-  morgan(":method :url :status :res[content-length] - :response-time ms")
-);
-app.use(router);
+app.use(morgan(":method :url :status :res[content-length] - :response-time ms"));
+app.use(`/v${process.env.VERSION}`, router);
 app.get("/", (req: Request, res: Response) => {
   res.send("Express + TypeScript Server");
 });
@@ -22,16 +20,9 @@ app.get("/", (req: Request, res: Response) => {
 if (process.env.NODE_ENV != "production") {
   const swaggerFile: any = process.cwd() + "/src/swagger/swagger.json";
   const swaggerData: any = fs.readFileSync(swaggerFile, "utf8");
-  const customCss: any = fs.readFileSync(
-    process.cwd() + "/src/swagger/swagger.css",
-    "utf8"
-  );
+  const customCss: any = fs.readFileSync(process.cwd() + "/src/swagger/swagger.css", "utf8");
   const swaggerDocument = JSON.parse(swaggerData);
-  app.use(
-    "/api/docs",
-    swaggerUi.serve,
-    swaggerUi.setup(swaggerDocument, undefined, undefined, customCss)
-  );
+  app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument, undefined, undefined, customCss));
 }
 
 // handle undefined routes
@@ -39,7 +30,7 @@ app.use("*", (req, res, next) => {
   res.send("Make sure url is correct!!!");
 });
 
-sync().then(() => {
+sync({}).then(() => {
   const server = app.listen(server_port, () => {
     const addr = server.address();
     const bind = typeof addr === "string" ? `pipe ${addr}` : `${addr?.port}`;

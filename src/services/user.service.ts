@@ -1,14 +1,12 @@
 import { Response } from "express";
 import API from "../configs/axios";
-import { MqttClients } from "../model/mqtt_client.model";
+import { MqttClient } from "../model/mqttClient.model";
 import { User } from "../model/user.model";
-import { ICreateUserReq, ICreateClientReq, ICreateClientRes } from "../interface/user.interface";
+import { IChangePasswordUserSrv, ICreateUserReq } from "../interface/user.interface";
 import { IPublishReq, IPublishRes } from "../interface/publish.interface";
 
-type ICreateUserRes = { is_superuser: boolean; user_id: string };
-
 export async function FindOneClientByUserId(userId: string, clientId: string) {
-  const client = await MqttClients.findOne({ where: { uid: userId, client_id: clientId } });
+  const client = await MqttClient.findOne({ where: { uid: userId, client_id: clientId } });
   return client;
 }
 
@@ -37,20 +35,29 @@ export async function SignInUser(username: string) {
   }
 }
 
+export async function GetUserById(id: string) {
+  const response = await User.findOne({ where: { username: id } });
+  return response;
+}
+
 export async function FindOneUser(username: string) {
   const response = await User.findOne({ attributes: ["id", "name", "username"], where: { username: username } });
   return response;
 }
 
-export async function CreateClient(formData: ICreateClientReq) {
+export async function ChangePassword(formdata: IChangePasswordUserSrv): Promise<any> {
   try {
-    const response = await API.post<ICreateClientRes>(
-      "/authentication/password_based:built_in_database/users",
-      formData
+    const response = await User.update(
+      { password: formdata.new_password },
+      {
+        where: {
+          id: formdata.uid,
+        },
+      }
     );
     return response;
   } catch (error: any) {
-    return { data: { data: error.response.data, code: error.code } };
+    return { error: error.parent.detail };
   }
 }
 

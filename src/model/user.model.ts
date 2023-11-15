@@ -1,4 +1,3 @@
-import { NotNull } from "sequelize-typescript";
 import { Model, InferAttributes, InferCreationAttributes, DataTypes, CreationOptional } from "sequelize";
 import { sequelize } from "../configs/db.config";
 

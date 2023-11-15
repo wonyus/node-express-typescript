@@ -1,32 +1,17 @@
 import Joi from "joi";
 
-export interface ICreateClientReq {
-  user_id: string;
-  password: string;
-}
-export const JCreateClientReqSchema = Joi.object<ICreateClientReq>({
-  user_id: Joi.string().required().min(1),
-  password: Joi.string().required().min(1),
-});
-
-export interface ICreateClientRes {
-  is_superuser?: boolean;
-  user_id: string;
-}
-export const JCreateClientResSchema = Joi.object<ICreateClientRes>({
-  is_superuser: Joi.boolean().optional().default(false),
-  user_id: Joi.string().required().min(1),
-});
-
 export interface ICreateUserReq {
   name: string;
   username: string;
   password: string;
+  is_superuser: boolean
 }
+
 export const JCreateUserReqSchema = Joi.object<ICreateUserReq>({
   name: Joi.string().required().min(1),
   username: Joi.string().required().min(1),
   password: Joi.string().required().min(1),
+  is_superuser: Joi.boolean().default(false)
 });
 
 export interface ISignInUserReq {
@@ -37,3 +22,18 @@ export const JSignInUserReqSchema = Joi.object<ISignInUserReq>({
   username: Joi.string().required().min(1),
   password: Joi.string().required().min(1),
 });
+
+export interface IChangePasswordUserReq {
+  old_password: string;
+  new_password: string;
+}
+
+export const JChangePasswordUserReqSchema = Joi.object<IChangePasswordUserReq>({
+  old_password: Joi.string().required().min(1),
+  new_password: Joi.string().required().min(1),
+});
+
+export interface IChangePasswordUserSrv {
+  uid: string;
+  new_password: string;
+}
