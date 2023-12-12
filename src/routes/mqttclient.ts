@@ -2,7 +2,7 @@ import { Router } from "express";
 import { GetClientStatusByUser, RegisterClient } from "../controller/mqttClient.controller";
 import RequireAuth from "../middleware/requireAuth";
 import validateBody from "../middleware/validateBody";
-import { JRegisterClientSchema } from "../interface/mqttclient.interface";
+import { JRegisterClientSchema } from "../interface/mqttClient.interface";
 import { JChangePasswordMqttUserReqSchema } from "../interface/mqttUser.interface";
 import { ChangePasswordMqttUser } from "../controller/mqttUser.controller";
 

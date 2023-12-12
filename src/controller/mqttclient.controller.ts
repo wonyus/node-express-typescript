@@ -1,20 +1,32 @@
 import { Request, Response } from "express";
-import { IRegisterClient } from "../interface/mqttclient.interface";
+import { IRegisterDevice } from "../interface/mqttClient.interface";
 import { CreateDevice, FindClientByUserId, GetClientConnectByUser } from "../services/mqttClient.service";
 import { decodeJWT } from "../utils/JWT";
+import { IRegisterSwitch } from "../interface/basicSwitch";
+import { CreateSwitch } from "../services/switch.service";
 
 export async function RegisterClient(req: Request, res: Response) {
   //Get data from req
   const decode = decodeJWT(String(req.headers?.authorization).split(" ")[1]);
-  const regisFormdata: IRegisterClient = req.body;
+  const regisFormdata: IRegisterDevice = req.body;
 
   //Process
   const resData = await CreateDevice(decode.userId, regisFormdata);
-
   //validate and response
   if (resData?.error) {
     return res.status(500).json({ error: resData?.error });
   }
+
+  const formData: IRegisterSwitch[] = [];
+  for (let i = 0; i < regisFormdata.switch_amount; i++) {
+    formData.push({ client_id: resData.id, mqtt_client_id: regisFormdata.client_id, status: false } as IRegisterSwitch);
+  }
+  const resCreateSwitch = await CreateSwitch(formData);
+  //validate and response
+  if (resCreateSwitch?.error) {
+    return res.status(500).json({ error: resCreateSwitch?.error });
+  }
+
   return res.status(201).json({ message: "success", result: resData });
 }
 

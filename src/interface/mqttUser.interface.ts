@@ -16,3 +16,4 @@ export interface IChangePasswordMqttUserSrv {
   mqtt_username: string;
   new_password: string;
 }
+

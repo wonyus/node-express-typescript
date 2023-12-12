@@ -9,11 +9,12 @@ import {
   FindOneUser,
   ChangePassword,
 } from "../services/user.service";
-import { decodeJWT, generateJWT } from "../utils/JWT";
+import { generateJWT } from "../utils/JWT";
 import { encryptPassword, validatePassword } from "../utils/bcrypt";
 import { IChangePasswordUserReq, IChangePasswordUserSrv, ICreateUserReq, ISignInUserReq } from "../interface/user.interface";
 import { IPublishReq } from "../interface/publish.interface";
 import { CreateMqttUser } from "../services/mqttUser.service";
+import { UserModel } from "../model/user.model";
 
 export async function Signup(req: Request, res: Response) {
   // encryptPassword
@@ -50,7 +51,7 @@ export async function SignIn(req: Request, res: Response) {
 
   //get user
   const userRes: any = await SignInUser(userFormData.username);
-  if (userRes?.error) {
+  if (userRes?.error || userRes == null) {
     return res.status(500).json({ error: "user or password invalid" });
   }
 
@@ -60,15 +61,15 @@ export async function SignIn(req: Request, res: Response) {
     return res.status(500).json({ error: "user or password invalid" });
   }
   delete userRes.dataValues.password;
+  
   //sign jtw
   const signJwt = generateJWT(userRes);
-  return res.status(201).json({ message: "success", result: { user: userRes, token: signJwt } });
+  return res.status(200).json({ message: "success", result: { user: userRes, token: signJwt } });
 }
 
 export async function GetUserInfo(req: Request, res: Response) {
-  const decode = decodeJWT(String(req.headers?.authorization).split(" ")[1]);
+  const user = req.user as UserModel;
 
-  const user = await FindOneUser(decode.username);
   if (user == null) {
     return res.status(404).json({ message: "not found", result: user });
   }
@@ -76,10 +77,10 @@ export async function GetUserInfo(req: Request, res: Response) {
 }
 
 export async function FindClientByUserIds(req: Request, res: Response) {
-  const decode = decodeJWT(String(req.headers?.authorization).split(" ")[1]);
+  const user = req.user as UserModel;
   const ClientId = req.body.clientId;
 
-  const client = await FindOneClientByUserId(decode.userId, ClientId);
+  const client = await FindOneClientByUserId(String(user.id), ClientId);
   if (client == null) {
     return res.status(404).json({ message: "not found", result: client });
   }
@@ -123,11 +124,11 @@ export async function TestSignPass(req: Request, res: Response) {
 
 export async function ChangePasswordUser(req: Request, res: Response) {
   //Get data from req
-  const decode = decodeJWT(String(req.headers?.authorization).split(" ")[1]);
+  const userData = req.user as UserModel;
   const formData: IChangePasswordUserReq = req.body;
 
   //Get User info
-  const user: any = await GetUserById(decode.userId);
+  const user: any = await GetUserById(String(userData.id));
 
   //validate password
   const validate = await validatePassword(formData.old_password, user.password);
@@ -137,7 +138,7 @@ export async function ChangePasswordUser(req: Request, res: Response) {
 
   //Process
   const new_password = await encryptPassword(formData.new_password);
-  const mockData: IChangePasswordUserSrv = { uid: decode.uid, new_password: new_password };
+  const mockData: IChangePasswordUserSrv = { uid: String(userData.id), new_password: new_password };
   const result = await ChangePassword(mockData);
 
   //validate and response

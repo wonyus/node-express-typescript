@@ -1,8 +1,8 @@
 import API from "../configs/axios";
-import { IRegisterClient } from "../interface/mqttclient.interface";
+import { IRegisterDevice } from "../interface/mqttClient.interface";
 import { MqttClient } from "../model/mqttClient.model";
 
-export async function CreateDevice(userId: number, formData: IRegisterClient): Promise<any> {
+export async function CreateDevice(userId: number, formData: IRegisterDevice): Promise<any> {
   try {
     const response = await MqttClient.create({ uid: userId, ...formData });
     return response;
@@ -21,8 +21,6 @@ export async function GetClientConnectByUser(username: string) {
 }
 
 export async function FindClientByUserId(userId: number) {
-  console.log(userId);
-
   try {
     const client = await MqttClient.findAll({ where: { uid: userId } });
     return client;

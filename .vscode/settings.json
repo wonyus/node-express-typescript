@@ -1,0 +1,19 @@
+{
+    "sqltools.connections": [
+        {
+            "pgOptions": {
+                "statement_timeout": 10000,
+                "query_timeout": 5000,
+                "connectionTimeoutMillis": 10000,
+                "idleTimeoutMillis": 10000,
+                "max": 5
+            },
+            "previewLimit": 50,
+            "server": "localhost",
+            "driver": "PostgreSQL",
+            "connectString": "postgres://middleware:010203won@POSTGRES@database.wonyus.tech:9032/iot",
+            "name": "iot",
+            "connectionTimeout": 10000
+        }
+    ]
+}

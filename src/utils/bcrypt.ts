@@ -24,32 +24,3 @@ export async function validatePassword(plainPassword: string, hashedPassword: st
     throw err;
   }
 }
-
-// Example usage
-// const plainPassword = 'userPassword123';
-
-// encryptPassword(plainPassword)
-//   .then((hashedPassword) => {
-//     console.log('Encrypted Password:', hashedPassword);
-//   })
-//   .catch((err) => {
-//     console.error('Error:', err.message);
-//   });
-
-// Function to validate a password against its hashed counterpart
-
-// Example usage
-// const plainPassword = 'userPassword123';
-// const hashedPassword = '$2b$10$7oOFymgEXFf8ZCq6vPyJkejGL1YGrZmVRLsCh/dNMC3s/N4WYS20m';
-
-// validatePassword(plainPassword, hashedPassword)
-//   .then((isMatch) => {
-//     if (isMatch) {
-//       console.log('Password is correct.');
-//     } else {
-//       console.log('Password is incorrect.');
-//     }
-//   })
-//   .catch((err) => {
-//     console.error('Error:', err.message);
-//   });

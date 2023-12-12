@@ -1,15 +1,18 @@
 import { Request, Response } from "express";
-import { IRegisterClient } from "../interface/mqttclient.interface";
+import { IRegisterDevice } from "../interface/mqttClient.interface";
 import { CreateDevice, FindClientByUserId, GetClientConnectByUser } from "../services/mqttClient.service";
 import { decodeJWT } from "../utils/JWT";
 import { IChangePasswordMqttUserReq, IChangePasswordMqttUserSrv } from "../interface/mqttUser.interface";
 import { encryptPassword, validatePassword } from "../utils/bcrypt";
 import { ChangePassword, FindMqttUserByUserId } from "../services/mqttUser.service";
+import { UserModel } from "../model/user.model";
+import { GetSwitchByClientId } from "../services/switch.service";
+import { ISwitchData } from "../interface/basicSwitch";
 
 export async function RegisterClient(req: Request, res: Response) {
   //Get data from req
   const decode = decodeJWT(String(req.headers?.authorization).split(" ")[1]);
-  const regisFormdata: IRegisterClient = req.body;
+  const regisFormdata: IRegisterDevice = req.body;
 
   //Process
   const resData = await CreateDevice(decode.userId, regisFormdata);
@@ -48,3 +51,52 @@ export async function ChangePasswordMqttUser(req: Request, res: Response) {
   //Response
   return res.status(200).json({ message: "success", result: result });
 }
+
+export const GetClientStatusByUser = async (req: Request, res: Response) => {
+  //Get data from req
+  const user = req.user as UserModel;
+
+  //Process
+  const resClientAll: any = await FindClientByUserId(user.id);
+  if (resClientAll.error) {
+    return res.status(500).json({ error: resClientAll?.error });
+  }
+  const ClientAllString: string = JSON.stringify(resClientAll);
+  const ClientAll: any = [];
+
+  JSON.parse(ClientAllString).forEach((element: any) => {
+    element.switchs = [];
+    ClientAll.push(element);
+  });
+
+  ClientAll.map(async (val: any) => {
+    const resSwithch: any = await GetSwitchByClientId(val.id);
+    if (resSwithch == null) {
+      return res.status(404).json({ error: "not fount" });
+    }
+    val.switchs = resSwithch;
+    return val;
+  });
+
+  const resClientConn: any = await GetClientConnectByUser(user.username);
+  if (resClientConn.error) {
+    return res.status(500).json({ error: resClientConn?.error });
+  }
+
+  //Process
+  const result: { client_id: string; connected: boolean; data: ISwitchData[] }[] = [];
+  const connected: string[] = resClientConn.data.data.map((val: any) => val.clientid);
+
+  for (let i = 0; i < ClientAll.length; i++) {
+    const client_id = ClientAll[i].client_id;
+    const connected_index = connected.indexOf(client_id);
+    const connected_status = connected_index != -1 ? true : false;
+    const data: ISwitchData[] = ClientAll[i].switchs.map((val: any) => {
+      return { client_id: client_id, switch_id: val.id, status: val.status, name: val.name, mqtt_client_id: val.mqtt_client_id };
+    });
+    result.push({ client_id: client_id, connected: connected_status, data: data });
+  }
+
+  //Response
+  return res.status(200).json({ message: "success", result: result });
+};

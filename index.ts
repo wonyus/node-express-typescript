@@ -5,12 +5,24 @@ import * as fs from "fs";
 import { server_port } from "./src/configs/constant";
 import { APILogger } from "./src/logger/api.loggers";
 import { sync } from "./src/model";
-const morgan = require("morgan");
+import passport from "passport";
+import expresssession from "express-session";
+import PassportJwt from "./src/middleware/passport";
 
+const morgan = require("morgan");
 const app: Express = express();
 const logger = new APILogger();
 
+app.use(expresssession({ secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: false }));
+app.use(passport.initialize());
+app.use(passport.session());
+PassportJwt(passport);
+
 app.use(morgan(":method :url :status :res[content-length] - :response-time ms"));
+
+app.route("/health").get((req: Request, res: Response) => {
+  res.status(200).json({ message: "success" });
+});
 app.use(`/v${process.env.VERSION}`, router);
 app.get("/", (req: Request, res: Response) => {
   res.send("Express + TypeScript Server");
@@ -26,7 +38,7 @@ if (process.env.NODE_ENV != "production") {
 }
 
 // handle undefined routes
-app.use("*", (req, res, next) => {
+app.use("*", (_, res, next) => {
   res.send("Make sure url is correct!!!");
 });
 
