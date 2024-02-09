@@ -1,5 +1,5 @@
 {
-  "name": "node-express-typescript",
+  "name": "node-server-emqx",
   "version": "0.0.0",
   "main": "index.js",
   "license": "MIT",
