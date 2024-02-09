@@ -11,7 +11,7 @@ const PassportJwt = (passport: PassportStatic) => {
   passport.use(
     new Strategy(opts, (jwtPayload, done) => {
       FindOneUser(jwtPayload.username)
-        .then((user) => {
+        .then((user: any) => {
           if (user) {
             return done(null, user.dataValues);
           }

@@ -35,7 +35,7 @@ export async function GetClientStatusByUser(req: Request, res: Response) {
   const decode = decodeJWT(String(req.headers?.authorization).split(" ")[1]);
 
   //Process
-  const resClientConn = await GetClientConnectByUser(decode.username);
+  const resClientConn: any = await GetClientConnectByUser(decode.username);
   const resClientAll: any = await FindClientByUserId(decode.userId);
 
   //validate and response
@@ -45,7 +45,7 @@ export async function GetClientStatusByUser(req: Request, res: Response) {
 
   //Process
   const result: { client_id: string; connected: boolean }[] = [];
-  const connected: string[] = resClientConn.data.data.map((val: any) => val.clientid);
+  const connected: string[] = resClientConn?.data.data.map((val: any) => val.clientid);
 
   resClientAll.forEach((valAll: any) => {
     result.push({ client_id: valAll.client_id, connected: connected.includes(valAll.client_id) });
