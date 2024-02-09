@@ -9,12 +9,13 @@ import {
   FindOneUser,
   ChangePassword,
 } from "../services/user.service";
-import { generateJWT } from "../utils/JWT";
+import { User, generateAccessJWT, generateRefreshJWT } from "../utils/JWT";
 import { encryptPassword, validatePassword } from "../utils/bcrypt";
 import { IChangePasswordUserReq, IChangePasswordUserSrv, ICreateUserReq, ISignInUserReq } from "../interface/user.interface";
 import { IPublishReq } from "../interface/publish.interface";
 import { CreateMqttUser } from "../services/mqttUser.service";
 import { UserModel } from "../model/user.model";
+import { ResponseErrorWithCode } from "../utils/mapResponse";
 
 export async function Signup(req: Request, res: Response) {
   // encryptPassword
@@ -28,6 +29,10 @@ export async function Signup(req: Request, res: Response) {
     is_superuser: Boolean(req.body.is_superuser),
   };
 
+  const checkUser = await FindOneUser(userFormData.username);
+  if (checkUser != null) {
+    return ResponseErrorWithCode(res, 500, "Bad Request", "username is already");
+  }
   //create user to DB
   const userRes: any = await CreateUser(userFormData);
   if (userRes?.error) {
@@ -61,10 +66,36 @@ export async function SignIn(req: Request, res: Response) {
     return res.status(500).json({ error: "user or password invalid" });
   }
   delete userRes.dataValues.password;
-  
+
   //sign jtw
-  const signJwt = generateJWT(userRes);
-  return res.status(200).json({ message: "success", result: { user: userRes, token: signJwt } });
+  const signAccessTokenJwt = generateAccessJWT(userRes);
+  const signRefreshTokenTokenJwt = generateRefreshJWT(userRes);
+
+  return res
+    .status(200)
+    .json({ message: "success", result: { user: userRes, accessToken: signAccessTokenJwt, refreshToken: signRefreshTokenTokenJwt } });
+}
+
+export async function RefreshToken(req: Request, res: Response) {
+  const user = req.user as UserModel;
+
+  //get user
+  const userRes: any = await FindOneUser(user.username);
+  const userData: User = {
+    id: String(user.id),
+    username: user.username,
+  };
+
+  if (user == null) {
+    return res.status(404).json({ message: "not found", result: user });
+  }
+  //sign jtw
+  const signAccessTokenJwt = generateAccessJWT(userData);
+  const signRefreshTokenTokenJwt = generateRefreshJWT(userData);
+
+  return res
+    .status(200)
+    .json({ message: "success", result: { user: userRes, accessToken: signAccessTokenJwt, refreshToken: signRefreshTokenTokenJwt } });
 }
 
 export async function GetUserInfo(req: Request, res: Response) {
@@ -94,7 +125,7 @@ export async function PublishMessage(req: Request, res: Response) {
     payload: req.body.payload,
     retain: req.body.retain,
   };
-  const clientRes = await Publish(formData);
+  const clientRes: any = await Publish(formData);
 
   if (clientRes == null) {
     return res.status(404).json({ message: "not found", result: clientRes });
@@ -104,7 +135,7 @@ export async function PublishMessage(req: Request, res: Response) {
 
 export async function PublishMessageBulk(req: Request, res: Response) {
   const formData: IPublishReq[] = req.body;
-  const clientRes = await PublishBulk(formData);
+  const clientRes: any = await PublishBulk(formData);
 
   if (clientRes == null) {
     return res.status(404).json({ message: "not found", result: clientRes });

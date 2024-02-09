@@ -9,7 +9,7 @@ export const sequelize = new Sequelize(DB_URL, {
     deletedAt: "delete_date",
   },
   pool: {
-    max: 10,
+    max: 5,
     min: 0,
     acquire: 20000,
     idle: 5000,

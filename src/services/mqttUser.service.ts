@@ -1,6 +1,8 @@
+import { DBError } from "../interface/errors";
 import { IChangePasswordMqttUserReq, IChangePasswordMqttUserSrv } from "../interface/mqttUser.interface";
 import { ICreateUserReq } from "../interface/user.interface";
 import { MqttUser } from "../model/mqttUser.model";
+import { MapDBError } from "../utils/mapValue";
 
 export async function FindMqttUserByUserId(userId: string, mqtt_username: string) {
   const client = await MqttUser.findOne({ where: { uid: userId, username: mqtt_username } });
@@ -17,7 +19,8 @@ export async function CreateMqttUser(userId: number, formdata: ICreateUserReq): 
     });
     return response;
   } catch (error: any) {
-    return { error: error.parent.detail };
+    const newError: DBError = MapDBError(error);
+    return newError;
   }
 }
 
@@ -33,8 +36,7 @@ export async function ChangePassword(formdata: IChangePasswordMqttUserSrv) {
     );
     return response;
   } catch (error: any) {
-    console.log(error);
-    
-    return { error: error.parent.detail };
+    const newError: DBError = MapDBError(error);
+    return newError;
   }
 }

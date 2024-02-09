@@ -78,13 +78,15 @@ export const GetClientStatusByUser = async (req: Request, res: Response) => {
     return val;
   });
 
+  console.log(ClientAll)
+
   const resClientConn: any = await GetClientConnectByUser(user.username);
   if (resClientConn.error) {
     return res.status(500).json({ error: resClientConn?.error });
   }
 
   //Process
-  const result: { client_id: string; connected: boolean; data: ISwitchData[] }[] = [];
+  const result: { id: number; client_id: string; status_online: boolean; data: ISwitchData[] }[] = [];
   const connected: string[] = resClientConn.data.data.map((val: any) => val.clientid);
 
   for (let i = 0; i < ClientAll.length; i++) {
@@ -94,9 +96,9 @@ export const GetClientStatusByUser = async (req: Request, res: Response) => {
     const data: ISwitchData[] = ClientAll[i].switchs.map((val: any) => {
       return { client_id: client_id, switch_id: val.id, status: val.status, name: val.name, mqtt_client_id: val.mqtt_client_id };
     });
-    result.push({ client_id: client_id, connected: connected_status, data: data });
+    result.push({ id: ClientAll[i].id, client_id: client_id, status_online: connected_status, data: data });
   }
-
-  //Response
+  
+  //Response 
   return res.status(200).json({ message: "success", result: result });
 };

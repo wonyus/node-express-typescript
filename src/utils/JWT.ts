@@ -1,12 +1,12 @@
 import jwt, { SignOptions, VerifyOptions } from "jsonwebtoken";
-import { expDate, secretKey, appName } from "../configs/constant";
+import { accessExpDate, refreshExpDate, secretKey, appName } from "../configs/constant";
 
 export interface User {
   id: string;
   username: string;
 }
 
-export function generateJWT(user: User): string | null {
+export function generateAccessJWT(user: User): string | null {
   try {
     const payload = {
       userId: user.id,
@@ -14,7 +14,31 @@ export function generateJWT(user: User): string | null {
     };
 
     const options: SignOptions = {
-      expiresIn: expDate,
+      expiresIn: accessExpDate,
+      algorithm: "HS256",
+      issuer: appName,
+      jwtid: String(user.id),
+      subject: user.username,
+    };
+
+    const token = jwt.sign(payload, secretKey, options);
+
+    return token;
+  } catch (err: any) {
+    console.error("Error generating JWT:", err.message);
+    return null;
+  }
+}
+
+export function generateRefreshJWT(user: User): string | null {
+  try {
+    const payload = {
+      userId: user.id,
+      username: user.username,
+    };
+
+    const options: SignOptions = {
+      expiresIn: refreshExpDate,
       algorithm: "HS256",
       issuer: appName,
       jwtid: String(user.id),

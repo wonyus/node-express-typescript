@@ -1,7 +1,6 @@
 import { Strategy, ExtractJwt } from "passport-jwt";
 import { FindOneUser } from "../services/user.service";
 import { PassportStatic } from "passport";
-import { log } from "console";
 
 const PassportJwt = (passport: PassportStatic) => {
   const opts = {
