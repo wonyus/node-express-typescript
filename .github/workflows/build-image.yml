@@ -3,7 +3,7 @@ name: build backend
 on:
   push:
     branches: ["development"]
-    paths: ["src/**"]
+    paths: ["src/**", "package.json"]
 
 jobs:
   docker:
@@ -17,6 +17,7 @@ jobs:
         id: create_tag
         uses: jaywcjlove/create-tag-action@v1.2.0
         with:
+          context: .
           token: ${{ secrets.GITHUB_TOKEN }}
           package-path: ./package.json
         
