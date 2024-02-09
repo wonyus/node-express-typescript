@@ -10,15 +10,15 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - id: commit
-        uses: pr-mpt/actions-commit-hash@v2
-
       - name: Create Tag
         id: create_tag
         uses: jaywcjlove/create-tag-action@main
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          package-path: ./package.json
+          package-path: ./../../package.json
+
+      - id: commit
+        uses: pr-mpt/actions-commit-hash@v2
         
       - name: Checkout
         uses: actions/checkout@v3
