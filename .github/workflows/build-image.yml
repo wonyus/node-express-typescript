@@ -8,11 +8,18 @@ on:
 jobs:
   docker:
     runs-on: ubuntu-latest
- 
+    
     steps:
       - id: commit
         uses: pr-mpt/actions-commit-hash@v2
 
+      - name: Create Tag
+        id: create_tag
+        uses: jaywcjlove/create-tag-action@v1.2.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          package-path: ./package.json
+        
       - name: Checkout
         uses: actions/checkout@v3
 
@@ -34,4 +41,4 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: wonyus/node-emqx:latest, wonyus/node-emqx:${{ steps.commit.outputs.short }}
+          tags: wonyus/node-emqx:latest, wonyus/node-emqx:${{ steps.create_tag.outputs.version }}
