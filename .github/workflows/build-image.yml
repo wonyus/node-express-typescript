@@ -3,7 +3,7 @@ name: build backend
 on:
   push:
     branches: ["development"]
-    paths: ["src/**"]
+    paths: ["src/**", "package.json"]
 
 jobs:
   docker:
