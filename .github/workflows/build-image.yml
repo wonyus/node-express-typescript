@@ -3,7 +3,7 @@ name: build backend
 on:
   push:
     branches: ["development"]
-    paths: ["src/**", "package.json"]
+    # paths: ["src/**", "package.json"]
 
 jobs:
   docker:
@@ -15,8 +15,8 @@ jobs:
         
       - name: Checkout
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+        # with:
+        #   fetch-depth: 0
 
       - name: Get last tag
         id: get_last_tag
