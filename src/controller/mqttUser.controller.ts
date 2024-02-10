@@ -10,95 +10,79 @@ import { GetSwitchByClientId } from "../services/switch.service";
 import { ISwitchData } from "../interface/basicSwitch";
 
 export async function RegisterClient(req: Request, res: Response) {
-  //Get data from req
-  const decode = decodeJWT(String(req.headers?.authorization).split(" ")[1]);
-  const regisFormdata: IRegisterDevice = req.body;
-
-  //Process
-  const resData = await CreateDevice(decode.userId, regisFormdata);
-
-  //validate and response
-  if (resData?.error) {
-    return res.status(500).json({ error: resData?.error });
+  try {
+    const decode = decodeJWT(String(req.headers?.authorization).split(" ")[1]);
+    const regisFormdata: IRegisterDevice = req.body;
+    const resData = await CreateDevice(decode.userId, regisFormdata);
+    if (resData?.error) {
+      return res.status(500).json({ error: resData.error });
+    }
+    return res.status(201).json({ message: "success", result: resData });
+  } catch (error) {
+    console.error("Error in RegisterClient:", error);
+    return res.status(500).json({ error: "Internal server error" });
   }
-  return res.status(201).json({ message: "success", result: resData });
 }
 
 export async function ChangePasswordMqttUser(req: Request, res: Response) {
-  //Get data from req
-  const decode = decodeJWT(String(req.headers?.authorization).split(" ")[1]);
-  const formData: IChangePasswordMqttUserReq = req.body;
-
-  //Get Mqtt User info
-  const mqtt_user: any = await FindMqttUserByUserId(decode.userId, formData.mqtt_username);
-
-  //validate password
-  const validate = await validatePassword(formData.old_password, mqtt_user.password);
-  if (!validate) {
-    return res.status(500).json({ error: "user or password invalid" });
+  try {
+    const decode = decodeJWT(String(req.headers?.authorization).split(" ")[1]);
+    const formData: IChangePasswordMqttUserReq = req.body;
+    const mqtt_user: any = await FindMqttUserByUserId(decode.userId, formData.mqtt_username);
+    const validate = await validatePassword(formData.old_password, mqtt_user.password);
+    if (!validate) {
+      return res.status(500).json({ error: "User or password invalid" });
+    }
+    const new_password = await encryptPassword(formData.new_password);
+    const mockData: IChangePasswordMqttUserSrv = { mqtt_username: formData.mqtt_username, new_password: new_password };
+    const result: any = await ChangePassword(mockData);
+    if (result.error) {
+      return res.status(500).json({ error: result.error });
+    }
+    return res.status(200).json({ message: "success", result: result });
+  } catch (error) {
+    console.error("Error in ChangePasswordMqttUser:", error);
+    return res.status(500).json({ error: "Internal server error" });
   }
-
-  //Process
-  const new_password = await encryptPassword(formData.new_password);
-  const mockData: IChangePasswordMqttUserSrv = { mqtt_username: formData.mqtt_username, new_password: new_password };
-  const result: any = await ChangePassword(mockData);
-
-  //validate and response
-  if (result.error) {
-    return res.status(500).json({ error: result?.error });
-  }
-
-  //Response
-  return res.status(200).json({ message: "success", result: result });
 }
 
 export const GetClientStatusByUser = async (req: Request, res: Response) => {
-  //Get data from req
-  const user = req.user as UserModel;
-
-  //Process
-  const resClientAll: any = await FindClientByUserId(user.id);
-  if (resClientAll.error) {
-    return res.status(500).json({ error: resClientAll?.error });
-  }
-  const ClientAllString: string = JSON.stringify(resClientAll);
-  const ClientAll: any = [];
-
-  JSON.parse(ClientAllString).forEach((element: any) => {
-    element.switchs = [];
-    ClientAll.push(element);
-  });
-
-  ClientAll.map(async (val: any) => {
-    const resSwithch: any = await GetSwitchByClientId(val.id);
-    if (resSwithch == null) {
-      return res.status(404).json({ error: "not fount" });
+  try {
+    const user = req.user as UserModel;
+    const resClientAll: any = await FindClientByUserId(user.id);
+    if (resClientAll.error) {
+      return res.status(500).json({ error: resClientAll.error });
     }
-    val.switchs = resSwithch;
-    return val;
-  });
-
-  console.log(ClientAll)
-
-  const resClientConn: any = await GetClientConnectByUser(user.username);
-  if (resClientConn.error) {
-    return res.status(500).json({ error: resClientConn?.error });
-  }
-
-  //Process
-  const result: { id: number; client_id: string; status_online: boolean; data: ISwitchData[] }[] = [];
-  const connected: string[] = resClientConn.data.data.map((val: any) => val.clientid);
-
-  for (let i = 0; i < ClientAll.length; i++) {
-    const client_id = ClientAll[i].client_id;
-    const connected_index = connected.indexOf(client_id);
-    const connected_status = connected_index != -1 ? true : false;
-    const data: ISwitchData[] = ClientAll[i].switchs.map((val: any) => {
-      return { client_id: client_id, switch_id: val.id, status: val.status, name: val.name, mqtt_client_id: val.mqtt_client_id };
+    const ClientAll = JSON.parse(JSON.stringify(resClientAll)).map((element: any) => {
+      element.switchs = [];
+      return element;
     });
-    result.push({ id: ClientAll[i].id, client_id: client_id, status_online: connected_status, data: data });
+    await Promise.all(ClientAll.map(async (val: any) => {
+      const resSwitch: any = await GetSwitchByClientId(val.id);
+      if (resSwitch == null) {
+        throw new Error("Switch not found");
+      }
+      val.switchs = resSwitch;
+    }));
+    const resClientConn: any = await GetClientConnectByUser(user.username);
+    if (resClientConn.error) {
+      return res.status(500).json({ error: resClientConn.error });
+    }
+    const connected: string[] = resClientConn.data.data.map((val: any) => val.clientid);
+    const result = ClientAll.map((val: any) => {
+      const connected_status = connected.includes(val.client_id);
+      const data: ISwitchData[] = val.switchs.map((sw: any) => ({
+        client_id: val.client_id,
+        switch_id: sw.id,
+        status: sw.status,
+        name: sw.name,
+        mqtt_client_id: sw.mqtt_client_id
+      }));
+      return { id: val.id, client_id: val.client_id, status_online: connected_status, data: data };
+    });
+    return res.status(200).json({ message: "success", result: result });
+  } catch (error) {
+    console.error("Error in GetClientStatusByUser:", error);
+    return res.status(500).json({ error: "Internal server error" });
   }
-  
-  //Response 
-  return res.status(200).json({ message: "success", result: result });
 };
