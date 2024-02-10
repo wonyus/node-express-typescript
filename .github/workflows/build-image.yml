@@ -10,19 +10,18 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Create Tag
-        id: create_tag
-        uses: jaywcjlove/create-tag-action@main
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          package-path: ./package.json
-
       - id: commit
         uses: pr-mpt/actions-commit-hash@v2
         
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
+      - name: Get last tag
+        id: get_last_tag
+        run: echo "GIT_TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
+  
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
 
@@ -41,4 +40,4 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: wonyus/node-emqx:latest, wonyus/node-emqx:${{ steps.create_tag.outputs.version }}
+          tags: wonyus/node-emqx:latest, wonyus/node-emqx:${{ env.GIT_TAG }}
