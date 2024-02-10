@@ -1,6 +1,6 @@
-import { DBError } from "../interface/errors";
-import { IChangePasswordMqttUserReq, IChangePasswordMqttUserSrv } from "../interface/mqttUser.interface";
-import { ICreateUserReq } from "../interface/user.interface";
+import { DBError } from "@Interface/errors";
+import { IChangePasswordMqttUserReq, IChangePasswordMqttUserSrv } from "@Interface/mqttUser.interface";
+import { ICreateUserReq } from "@Interface/user.interface";
 import { MqttUser } from "../model/mqttUser.model";
 import { MapDBError } from "../utils/mapValue";
 

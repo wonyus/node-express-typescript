@@ -1,6 +1,6 @@
 import API from "../configs/axios";
-import { ApiError, DBError } from "../interface/errors";
-import { IRegisterDevice } from "../interface/mqttClient.interface";
+import { ApiError, DBError } from "@Interface/errors";
+import { IRegisterDevice } from "@Interface/mqttClient.interface";
 import { MqttClient } from "../model/mqttClient.model";
 import { MapAPIError, MapDBError } from "../utils/mapValue";
 

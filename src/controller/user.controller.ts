@@ -11,8 +11,8 @@ import {
 } from "../services/user.service";
 import { User, generateAccessJWT, generateRefreshJWT } from "../utils/JWT";
 import { encryptPassword, validatePassword } from "../utils/bcrypt";
-import { IChangePasswordUserReq, IChangePasswordUserSrv, ICreateUserReq, ISignInUserReq } from "../interface/user.interface";
-import { IPublishReq } from "../interface/publish.interface";
+import { IChangePasswordUserReq, IChangePasswordUserSrv, ICreateUserReq, ISignInUserReq } from "@Interface/user.interface";
+import { IPublishReq } from "@Interface/publish.interface";
 import { CreateMqttUser } from "../services/mqttUser.service";
 import { UserModel } from "../model/user.model";
 import { ResponseErrorWithCode } from "../utils/mapResponse";

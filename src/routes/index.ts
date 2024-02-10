@@ -3,7 +3,7 @@ import test from "./test";
 import UserRoute from "./user";
 import MqttClientRoute from "./mqttClient";
 import MqttWebhookRoute from "./webhook";
-import RequireAuth from "../middleware/requireAuth";
+import RequireAuth from "@Middleware/requireAuth";
 
 const router = Router();
 

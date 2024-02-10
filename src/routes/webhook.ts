@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { UpdateStatus } from "../controller/webhook.controller";
+import { UpdateStatus } from "@Controller/webhook.controller";
 const router = Router();
 
 router.post("/", UpdateStatus);
