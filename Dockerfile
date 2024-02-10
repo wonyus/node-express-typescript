@@ -1,5 +1,5 @@
 # Stage 1: Builder
-FROM node:18.19.0 AS builder
+FROM node:18.18-alpine AS builder
 
 # Set the working directory in the builder stage
 WORKDIR /app
@@ -14,7 +14,7 @@ RUN yarn install
 RUN yarn build
 
 # Stage 2: Installer
-FROM node:18.19.0 AS installer
+FROM node:18.18-alpine AS installer
 
 # Set the working directory in the installer stage
 WORKDIR /app
@@ -29,7 +29,7 @@ ENV NODE_ENV production
 RUN yarn install --production
 
 # Stage 3: Runner
-FROM node:18.19.0 AS runner
+FROM node:18.18-alpine AS runner
 
 # Set the working directory in the runner stage
 WORKDIR /app
@@ -43,7 +43,7 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/src/swagger ./src/swagger
 
 # Expose the port your application will run on (if applicable)
-EXPOSE 8080
+EXPOSE 4000
 
 
 # Define the command to run your application in the runner stage
