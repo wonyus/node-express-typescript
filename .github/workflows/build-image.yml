@@ -15,9 +15,9 @@ jobs:
         
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.ref }}
-          fetch-depth: 0
+        # with:
+        #   ref: ${{ github.ref }}
+        #   fetch-depth: 0
 
       - name: Get last tag
         id: get_last_tag
@@ -41,4 +41,4 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: wonyus/node-emqx:latest, wonyus/node-emqx:${{ env.GIT_TAG }}
+          tags: wonyus/node-emqx:latest, wonyus/node-emqx:${{ steps.commit.outputs.short }}
