@@ -1,4 +1,4 @@
-import { ApiError, DBError } from "@Interface/errors";
+import { ApiError, DBError } from "../interface/errors";
 
 const ErrorAPICase = (error: any): ApiError => {
   switch (error.code) {

@@ -1,5 +1,5 @@
-import { IRegisterSwitch } from "@Interface/basicSwitch";
-import { DBError } from "@Interface/errors";
+import { IRegisterSwitch } from "../interface/basicSwitch";
+import { DBError } from "../interface/errors";
 import { Switch } from "../model/switch.model";
 import { MapDBError } from "../utils/mapValue";
 

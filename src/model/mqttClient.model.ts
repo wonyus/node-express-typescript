@@ -2,7 +2,7 @@ import { Model, InferAttributes, DataTypes, InferCreationAttributes, CreationOpt
 import { sequelize } from "../configs/db.config";
 import { User } from "./user.model";
 
-interface MqttClientModel extends Model<InferAttributes<MqttClientModel>, InferCreationAttributes<MqttClientModel>> {
+export interface MqttClientModel extends Model<InferAttributes<MqttClientModel>, InferCreationAttributes<MqttClientModel>> {
   id: CreationOptional<number>;
   uid: number;
   client_id: string;

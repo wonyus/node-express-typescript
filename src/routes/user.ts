@@ -1,12 +1,12 @@
 import { Router } from "express";
-import validateBody from "@Middleware/validateBody";
-import { ChangePasswordUser, GetUserInfo, PublishMessage, PublishMessageBulk, RefreshToken, SignIn, Signup } from "@Controller/user.controller";
-import { JChangePasswordUserReqSchema, JCreateUserReqSchema, JSignInUserReqSchema } from "@Interface/user.interface";
-import { JPublishBulkReqSchema, JPublishReqSchema } from "@Interface/publish.interface";
-import usePassport from "@Middleware/usePassport";
-import { GetClientStatusByUser } from "@Controller/mqttUser.controller";
-import { SignInOAuth } from "@Controller/oauth.comtroller";
-import { JSignInUserOAuthReqSchema } from "@Interface/oauth.interface";
+import validateBody from "../middleware/validateBody";
+import { ChangePasswordUser, GetUserInfo, PublishMessage, PublishMessageBulk, RefreshToken, SignIn, Signup } from "../controller/user.controller";
+import { JChangePasswordUserReqSchema, JCreateUserReqSchema, JSignInUserReqSchema } from "../interface/user.interface";
+import { JPublishBulkReqSchema, JPublishReqSchema } from "../interface/publish.interface";
+import usePassport from "../middleware/usePassport";
+import { GetClientStatusByUser } from "../controller/mqttUser.controller";
+import { SignInOAuth } from "../controller/oauth.controller"; // Fixed typo in controller import
+import { JSignInUserOAuthReqSchema } from "../interface/oauth.interface";
 
 const router = Router();
 

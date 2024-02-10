@@ -1,13 +1,13 @@
 import { Request, Response } from "express";
-import { IRegisterDevice } from "@Interface/mqttClient.interface";
+import { IRegisterDevice } from "../interface/mqttClient.interface";
 import { CreateDevice, FindClientByUserId, GetClientConnectByUser } from "../services/mqttClient.service";
 import { decodeJWT } from "../utils/JWT";
-import { IChangePasswordMqttUserReq, IChangePasswordMqttUserSrv } from "@Interface/mqttUser.interface";
+import { IChangePasswordMqttUserReq, IChangePasswordMqttUserSrv } from "../interface/mqttUser.interface";
 import { encryptPassword, validatePassword } from "../utils/bcrypt";
 import { ChangePassword, FindMqttUserByUserId } from "../services/mqttUser.service";
 import { UserModel } from "../model/user.model";
 import { GetSwitchByClientId } from "../services/switch.service";
-import { ISwitchData } from "@Interface/basicSwitch";
+import { ISwitchData } from "../interface/basicSwitch";
 
 export async function RegisterClient(req: Request, res: Response) {
   //Get data from req

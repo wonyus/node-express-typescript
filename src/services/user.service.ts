@@ -2,10 +2,10 @@ import { Response } from "express";
 import API from "../configs/axios";
 import { MqttClient } from "../model/mqttClient.model";
 import { User, UserModel } from "../model/user.model";
-import { IChangePasswordUserSrv, ICreateUserReq } from "@Interface/user.interface";
-import { IPublishReq, IPublishRes } from "@Interface/publish.interface";
-import { ICreateUserOAuthReq } from "@Interface/oauth.interface";
-import { ApiError, DBError } from "@Interface/errors";
+import { IChangePasswordUserSrv, ICreateUserReq } from "../interface/user.interface";
+import { IPublishReq, IPublishRes } from "../interface/publish.interface";
+import { ICreateUserOAuthReq } from "../interface/oauth.interface";
+import { ApiError, DBError } from "../interface/errors";
 import { MapAPIError, MapDBError } from "../utils/mapValue";
 
 export async function FindOneClientByUserId(userId: string, clientId: string) {

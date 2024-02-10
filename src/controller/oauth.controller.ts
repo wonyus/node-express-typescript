@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { ISignInUserOAuthReq } from "@Interface/oauth.interface";
+import { ISignInUserOAuthReq } from "../interface/oauth.interface";
 import { CreateUser, CreateUserOAuth, FindOneUserOAuth, UpdateUserOAuth } from "../services/user.service";
 import { CreateMqttUser } from "../services/mqttUser.service";
 import { generateAccessJWT, generateRefreshJWT } from "../utils/JWT";

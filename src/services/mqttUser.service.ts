@@ -1,10 +1,11 @@
-import { DBError } from "@Interface/errors";
-import { IChangePasswordMqttUserReq, IChangePasswordMqttUserSrv } from "@Interface/mqttUser.interface";
-import { ICreateUserReq } from "@Interface/user.interface";
+import { DBError } from "../interface/errors";
+import { IChangePasswordMqttUserReq, IChangePasswordMqttUserSrv } from "../interface/mqttUser.interface";
+import { ICreateUserReq } from "../interface/user.interface";
 import { MqttUser } from "../model/mqttUser.model";
 import { MapDBError } from "../utils/mapValue";
+import { MqttUserModel } from "../model/mqttUser.model";
 
-export async function FindMqttUserByUserId(userId: string, mqtt_username: string) {
+export async function FindMqttUserByUserId(userId: string, mqtt_username: string): Promise<MqttUserModel | null> {
   const client = await MqttUser.findOne({ where: { uid: userId, username: mqtt_username } });
   return client;
 }

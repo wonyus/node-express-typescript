@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { decodeJWT, validateJWT } from "../utils/JWT";
 
-function RequireAuth(req: Request, res: Response, next: NextFunction) {
+export default function RequireAuth(req: Request, res: Response, next: NextFunction) {
   const token: string = String(req.headers.authorization).split(" ")[1];
   const decode = decodeJWT(token);
   const validate = validateJWT(token, decode);
@@ -10,5 +10,3 @@ function RequireAuth(req: Request, res: Response, next: NextFunction) {
   }
   return next();
 }
-
-export default RequireAuth;

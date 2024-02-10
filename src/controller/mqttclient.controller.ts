@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import { IRegisterDevice } from "@Interface/mqttClient.interface";
+import { IRegisterDevice } from "../interface/mqttClient.interface";
 import { CreateDevice, FindClientByUserId, GetClientConnectByUser } from "../services/mqttClient.service";
 import { decodeJWT } from "../utils/JWT";
-import { IRegisterSwitch } from "@Interface/basicSwitch";
+import { IRegisterSwitch } from "../interface/basicSwitch";
 import { CreateSwitch } from "../services/switch.service";
 
 export async function RegisterClient(req: Request, res: Response) {

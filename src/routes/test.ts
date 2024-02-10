@@ -1,6 +1,6 @@
 import { Router } from "express";
-import RequireAuth from "@Middleware/requireAuth";
-import { TestControoler, TestSignPass } from "@Controller/user.controller";
+import RequireAuth from "../middleware/requireAuth";
+import { TestControoler, TestSignPass } from "../controller/user.controller";
 const router = Router();
 
 router.post("/", RequireAuth, TestControoler);
