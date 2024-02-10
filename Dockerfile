@@ -1,5 +1,5 @@
 # Stage 1: Builder
-FROM node:18.18-alpine AS builder
+FROM node:18.19.0 AS builder
 
 # Set the working directory in the builder stage
 WORKDIR /app
@@ -14,7 +14,7 @@ RUN yarn install
 RUN yarn build
 
 # Stage 2: Installer
-FROM node:18.18-alpine AS installer
+FROM node:18.19.0 AS installer
 
 # Set the working directory in the installer stage
 WORKDIR /app
@@ -29,7 +29,7 @@ ENV NODE_ENV production
 RUN yarn install --production
 
 # Stage 3: Runner
-FROM node:18.18-alpine AS runner
+FROM node:18.19.0 AS runner
 
 # Set the working directory in the runner stage
 WORKDIR /app
