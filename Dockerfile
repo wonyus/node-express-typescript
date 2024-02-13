@@ -8,10 +8,10 @@ WORKDIR /app
 COPY . .
 
 # Set NODE_ENV to 'production'
-ENV NODE_ENV production
+# ENV NODE_ENV production
 
 # Install project dependencies using Yarn in the builder stage
-RUN yarn install --production
+RUN yarn install
 
 # Build the TypeScript application in the builder stage
 RUN yarn build

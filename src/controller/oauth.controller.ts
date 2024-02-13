@@ -10,7 +10,7 @@ export async function SignInOAuth(req: Request, res: Response) {
 
   //get user
   const user = await FindOneUserOAuth(formData.username, formData.provider);
-  var userRes: any;
+  let userRes: any;
   //if not exist, create new user
   if (user == null) {
     //create user
