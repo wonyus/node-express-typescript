@@ -7,26 +7,14 @@ WORKDIR /app
 # Copy the rest of your application source code to the builder stage
 COPY . .
 
-# Install project dependencies using Yarn in the builder stage
-RUN yarn install
-
-# Build the TypeScript application in the builder stage
-RUN yarn build
-
-# Stage 2: Installer
-FROM node:18.18-alpine AS installer
-
-# Set the working directory in the installer stage
-WORKDIR /app
-
-# Copy package.json and yarn.lock from the builder stage
-COPY --from=builder /app/package.json /app/yarn.lock ./
-
 # Set NODE_ENV to 'production'
 ENV NODE_ENV production
 
-# Install only production dependencies using Yarn in the installer stage
+# Install project dependencies using Yarn in the builder stage
 RUN yarn install --production
+
+# Build the TypeScript application in the builder stage
+RUN yarn build
 
 # Stage 3: Runner
 FROM node:18.18-alpine AS runner
@@ -34,8 +22,9 @@ FROM node:18.18-alpine AS runner
 # Set the working directory in the runner stage
 WORKDIR /app
 
-# # Copy the production dependencies from the installer stage
-COPY --from=installer /app/node_modules ./node_modules
+COPY --from=builder /app/package.json /app/yarn.lock ./
+
+COPY --from=builder /app/node_modules ./node_modules
 
 # # Copy the TypeScript build from the builder stage
 COPY --from=builder /app/dist ./dist
