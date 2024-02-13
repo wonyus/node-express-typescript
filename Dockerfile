@@ -11,7 +11,9 @@ COPY . .
 # ENV NODE_ENV production
 
 # Install project dependencies using Yarn in the builder stage
-RUN yarn install --frozen-lockfile
+RUN yarn preci
+
+RUN yarn ci
 
 # Build the TypeScript application in the builder stage
 RUN yarn build
