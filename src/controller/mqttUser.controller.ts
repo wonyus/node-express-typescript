@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { IRegisterDevice } from "../interface/mqttClient.interface";
+import IRegisterDevice from "../interface/mqttClient.interface";
 import { CreateDevice, FindClientByUserId, GetClientConnectByUser } from "../services/mqttClient.service";
 import { decodeJWT } from "../utils/JWT";
 import { IChangePasswordMqttUserReq, IChangePasswordMqttUserSrv } from "../interface/mqttUser.interface";
@@ -57,13 +57,15 @@ export const GetClientStatusByUser = async (req: Request, res: Response) => {
       element.switchs = [];
       return element;
     });
-    await Promise.all(ClientAll.map(async (val: any) => {
-      const resSwitch: any = await GetSwitchByClientId(val.id);
-      if (resSwitch == null) {
-        throw new Error("Switch not found");
-      }
-      val.switchs = resSwitch;
-    }));
+    await Promise.all(
+      ClientAll.map(async (val: any) => {
+        const resSwitch: any = await GetSwitchByClientId(val.id);
+        if (resSwitch == null) {
+          throw new Error("Switch not found");
+        }
+        val.switchs = resSwitch;
+      })
+    );
     const resClientConn: any = await GetClientConnectByUser(user.username);
     if (resClientConn.error) {
       return res.status(500).json({ error: resClientConn.error });
@@ -76,7 +78,7 @@ export const GetClientStatusByUser = async (req: Request, res: Response) => {
         switch_id: sw.id,
         status: sw.status,
         name: sw.name,
-        mqtt_client_id: sw.mqtt_client_id
+        mqtt_client_id: sw.mqtt_client_id,
       }));
       return { id: val.id, client_id: val.client_id, status_online: connected_status, data: data };
     });
