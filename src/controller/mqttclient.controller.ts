@@ -3,6 +3,7 @@ import { CreateDevice, FindClientByUserId, GetClientConnectByUser } from "../ser
 import { decodeJWT } from "../utils/JWT";
 import { IRegisterSwitch } from "../interface/basicSwitch";
 import { CreateSwitch } from "../services/switch.service";
+import { ResponseError, ResponseSuccess, ResponseSuccessWithCode } from "../utils/mapResponse";
 
 export async function RegisterClient(req: Request, res: Response) {
   //Get data from req
@@ -12,21 +13,22 @@ export async function RegisterClient(req: Request, res: Response) {
   //Process
   const resData = await CreateDevice(decode.userId, regisFormdata);
   //validate and response
-  if (resData?.error) {
-    return res.status(500).json({ error: resData?.error });
+  if ("error" in resData) {
+    return ResponseError(res, "fail to create device", resData?.error);
   }
 
   const formData: IRegisterSwitch[] = [];
   for (let i = 0; i < regisFormdata.switch_amount; i++) {
     formData.push({ client_id: resData.id, mqtt_client_id: regisFormdata.client_id, status: false } as IRegisterSwitch);
   }
+
   const resCreateSwitch = await CreateSwitch(formData);
   //validate and response
-  if (resCreateSwitch?.error) {
-    return res.status(500).json({ error: resCreateSwitch?.error });
+  if ("error" in resCreateSwitch) {
+    return ResponseError(res, "fail to create switch", resCreateSwitch?.error);
   }
 
-  return res.status(201).json({ message: "success", result: resData });
+  return ResponseSuccessWithCode(res, 201, "created", resData);
 }
 
 export async function GetClientStatusByUser(req: Request, res: Response) {
@@ -34,13 +36,17 @@ export async function GetClientStatusByUser(req: Request, res: Response) {
   const decode = decodeJWT(String(req.headers?.authorization).split(" ")[1]);
 
   //Process
-  const resClientConn: any = await GetClientConnectByUser(decode.username);
-  const resClientAll: any = await FindClientByUserId(decode.userId);
+  const resClientConn = await GetClientConnectByUser(decode.username);
+  const resClientAll = await FindClientByUserId(decode.userId);
 
   //validate and response
-  if (resClientAll.error) {
-    return res.status(500).json({ error: resClientAll?.error });
+  if ("error" in resClientConn) {
+    return ResponseError(res, "fail to get client connection", resClientConn?.error);
   }
+  if ("error" in resClientAll) {
+    return ResponseError(res, "fail to get client", resClientAll?.error);
+  }
+ 
 
   //Process
   const result: { client_id: string; connected: boolean }[] = [];
@@ -51,5 +57,5 @@ export async function GetClientStatusByUser(req: Request, res: Response) {
   });
 
   //Response
-  return res.status(200).json({ message: "success", result: result });
+  return ResponseSuccess(res, result);
 }

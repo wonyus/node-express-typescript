@@ -1,9 +1,10 @@
+import { AxiosResponse } from "axios";
 import API from "../configs/axios";
 import { ApiError, DBError } from "../interface/errors";
 import { MqttClient, MqttClientModel } from "../model/mqttClient.model";
 import { MapAPIError, MapDBError } from "../utils/mapValue";
 
-export async function CreateDevice(userId: number, formData: IRegisterDevice): Promise<any> {
+export async function CreateDevice(userId: number, formData: IRegisterDevice): Promise<DBError | MqttClientModel> {
   try {
     const response = await MqttClient.create({ uid: userId, ...formData });
     return response;
@@ -13,7 +14,7 @@ export async function CreateDevice(userId: number, formData: IRegisterDevice): P
   }
 }
 
-export async function GetClientConnectByUser(username: string) {
+export async function GetClientConnectByUser(username: string): Promise<ApiError | AxiosResponse<any, any>> {
   try {
     const response = await API.get(`/clients?username=${username}`);
     return response;

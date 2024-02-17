@@ -5,12 +5,17 @@ import { MqttUser } from "../model/mqttUser.model";
 import { MapDBError } from "../utils/mapValue";
 import { MqttUserModel } from "../model/mqttUser.model";
 
-export async function FindMqttUserByUserId(userId: string, mqtt_username: string): Promise<MqttUserModel | null> {
-  const client = await MqttUser.findOne({ where: { uid: userId, username: mqtt_username } });
-  return client;
+export async function FindMqttUserByUserId(userId: string, mqtt_username: string): Promise<MqttUserModel | null | DBError> {
+  try {
+    const client = await MqttUser.findOne({ where: { uid: userId, username: mqtt_username } });
+    return client;
+  } catch (error: any) {
+    const newError: DBError = MapDBError(error);
+    return newError;
+  }
 }
 
-export async function CreateMqttUser(userId: number, formdata: ICreateUserReq): Promise<any> {
+export async function CreateMqttUser(userId: number, formdata: ICreateUserReq): Promise<MqttUserModel | null | DBError> {
   try {
     const response = await MqttUser.create({
       uid: userId,
@@ -25,7 +30,7 @@ export async function CreateMqttUser(userId: number, formdata: ICreateUserReq): 
   }
 }
 
-export async function ChangePassword(formdata: IChangePasswordMqttUserSrv) {
+export async function ChangePassword(formdata: IChangePasswordMqttUserSrv): Promise<[affectedCount: number] | null | DBError> {
   try {
     const response = await MqttUser.update(
       { password: formdata.new_password },

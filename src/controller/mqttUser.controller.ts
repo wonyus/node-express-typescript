@@ -8,15 +8,18 @@ import { ChangePassword, FindMqttUserByUserId } from "../services/mqttUser.servi
 import { UserModel } from "../model/user.model";
 import { GetSwitchByClientId } from "../services/switch.service";
 import { ISwitchData } from "../interface/basicSwitch";
+import { ResponseError } from "../utils/mapResponse";
 
 export async function RegisterClient(req: Request, res: Response) {
   try {
     const decode = decodeJWT(String(req.headers?.authorization).split(" ")[1]);
     const regisFormdata: IRegisterDevice = req.body;
     const resData = await CreateDevice(decode.userId, regisFormdata);
-    if (resData?.error) {
-      return res.status(500).json({ error: resData.error });
+
+    if ("error" in resData) {
+      return ResponseError(res, "fail to create device", resData?.error);
     }
+
     return res.status(201).json({ message: "success", result: resData });
   } catch (error) {
     console.error("Error in RegisterClient:", error);

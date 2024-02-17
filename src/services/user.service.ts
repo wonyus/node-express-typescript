@@ -1,14 +1,15 @@
 import { Response } from "express";
 import API from "../configs/axios";
-import { MqttClient } from "../model/mqttClient.model";
+import { MqttClient, MqttClientModel } from "../model/mqttClient.model";
 import { User, UserModel } from "../model/user.model";
 import { IChangePasswordUserSrv, ICreateUserReq } from "../interface/user.interface";
 import { IPublishReq, IPublishRes } from "../interface/publish.interface";
 import { ICreateUserOAuthReq } from "../interface/oauth.interface";
 import { ApiError, DBError } from "../interface/errors";
 import { MapAPIError, MapDBError } from "../utils/mapValue";
+import { AxiosResponse } from "axios";
 
-export async function FindOneClientByUserId(userId: string, clientId: string) {
+export async function FindOneClientByUserId(userId: string, clientId: string): Promise<MqttClientModel | DBError> {
   try {
     const client = await MqttClient.findOne({ where: { uid: userId, client_id: clientId } });
     return client;
@@ -133,7 +134,7 @@ export async function ChangePassword(formdata: IChangePasswordUserSrv): Promise<
   }
 }
 
-export async function Publish(formData: IPublishReq) {
+export async function Publish(formData: IPublishReq): Promise<AxiosResponse<IPublishRes, any> | ApiError> {
   try {
     const response = await API.post<IPublishRes>("/publish", formData);
     return response;
@@ -143,7 +144,7 @@ export async function Publish(formData: IPublishReq) {
   }
 }
 
-export async function PublishBulk(formData: IPublishReq[]) {
+export async function PublishBulk(formData: IPublishReq[]): Promise<ApiError | AxiosResponse<IPublishRes[], any>> {
   try {
     const response = await API.post<IPublishRes[]>("/publish/bulk", formData);
     return response;

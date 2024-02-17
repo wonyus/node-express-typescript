@@ -1,9 +1,9 @@
 import { IRegisterSwitch } from "../interface/basicSwitch";
 import { DBError } from "../interface/errors";
-import { Switch } from "../model/switch.model";
+import { Switch, SwitchModel } from "../model/switch.model";
 import { MapDBError } from "../utils/mapValue";
 
-export async function CreateSwitch(formData: IRegisterSwitch[]): Promise<any> {
+export async function CreateSwitch(formData: IRegisterSwitch[]): Promise<SwitchModel[] | null | DBError> {
   try {
     const response = await Switch.bulkCreate(formData);
     return response;
@@ -13,7 +13,7 @@ export async function CreateSwitch(formData: IRegisterSwitch[]): Promise<any> {
   }
 }
 
-export async function GetSwitchByClientId(client_id: string) {
+export async function GetSwitchByClientId(client_id: string): Promise<SwitchModel[] | null | DBError> {
   try {
     const response = await Switch.findAll({ where: { client_id: client_id } });
     return response;
@@ -23,7 +23,7 @@ export async function GetSwitchByClientId(client_id: string) {
   }
 }
 
-export async function FindOneSwitch(id: string) {
+export async function FindOneSwitch(id: string): Promise<SwitchModel | DBError> {
   try {
     const response = await Switch.findOne({ where: { id: id } });
     return response;
@@ -33,7 +33,7 @@ export async function FindOneSwitch(id: string) {
   }
 }
 
-export async function UpdateSwitch(id: string, formData: any) {
+export async function UpdateSwitch(id: string, formData: any): Promise<[affectedCount: number] | DBError> {
   try {
     const response = await Switch.update({ ...formData }, { where: { id: id } });
     return response;
