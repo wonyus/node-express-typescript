@@ -1,4 +1,3 @@
-import { Response } from "express";
 import API from "../configs/axios";
 import { MqttClient, MqttClientModel } from "../model/mqttClient.model";
 import { User, UserModel } from "../model/user.model";

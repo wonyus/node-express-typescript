@@ -1,3 +1,4 @@
+import { logger } from "../../index";
 import { ApiError, DBError } from "../interface/errors";
 
 const ErrorAPICase = (error: any): ApiError => {
@@ -46,12 +47,11 @@ const ErrorAPICase = (error: any): ApiError => {
 };
 
 export const MapAPIError = (error: any): ApiError => {
-  console.log(error);
   return ErrorAPICase(error);
 };
 
 const ErrorDBCase = (error: any): DBError => {
-  switch (error.code) {
+  switch (error.message.toUpperCase()) {
     case "ER_DUP_ENTRY":
       return {
         error: {
@@ -68,6 +68,23 @@ const ErrorDBCase = (error: any): DBError => {
           code: error.code,
         },
       };
+    case "ETIMEDOUT":
+      return {
+        error: {
+          message: "Connection Timed Out",
+          name: error.name,
+          code: error.code,
+        },
+      };
+    case "OPERATION TIMEOUT":
+      return {
+        error: {
+          message: error.message,
+          name: error.name,
+          code: error.code,
+        },
+      };
+
     default:
       return {
         error: {
@@ -80,14 +97,10 @@ const ErrorDBCase = (error: any): DBError => {
 };
 
 export const MapDBError = (error: any): DBError => {
-  console.log(Object.keys(error));
-  console.log(1, error.message);
-  console.log(2, error.name);
-  console.log(3, error.code);
-  console.log(4, error.errors);
-  console.log(5, error.parent);
-  console.log(Object.keys(error.errors))
-  console.log(6, error.errors[0].validatorKey);
-
+  logger.info(`${1}, ${error.message}`);
+  logger.info(`${2}, ${error.name}`);
+  logger.info(`${3}, ${error.code}`);
+  logger.info(`${4}, ${error.errors}`);
+  logger.info(`${5}, ${error.parent}`);
   return ErrorDBCase(error);
 };

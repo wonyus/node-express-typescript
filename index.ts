@@ -15,7 +15,7 @@ import { Server } from "socket.io";
 
 const morgan = require("morgan");
 const app: Express = express();
-const logger = new APILogger();
+export const logger = new APILogger();
 const WsServer = createServer(app);
 const io = new Server(WsServer, {
   cors: {
@@ -79,11 +79,11 @@ sync({}).then(() => {
 
 io.on("connection", (socket) => {
   socket.on("message", (msg) => {
-    console.log("message: " + msg);
+    logger.info("message: " + msg);
     io.emit("message", msg);
   });
 });
 
 WsServer.listen(server_port + 1, () => {
-  console.log("Socket server is running at http://localhost:" + (server_port + 1));
+  logger.info("Socket server is running at http://localhost:" + (server_port + 1));
 });
