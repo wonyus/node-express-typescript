@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { IRegisterDevice } from "../interface/mqttClient.interface";
+import { IRegisterDevice } from "../interface/mqttDevice.interface";
 import { CreateDevice, FindClientByUserId, GetClientConnectByUser } from "../services/mqttClient.service";
 import { decodeJWT } from "../utils/JWT";
 import { IChangePasswordMqttUserReq, IChangePasswordMqttUserSrv } from "../interface/mqttUser.interface";
