@@ -4,6 +4,7 @@ import { decodeJWT } from "../utils/JWT";
 import { IRegisterSwitch } from "../interface/basicSwitch";
 import { CreateSwitch } from "../services/switch.service";
 import { ResponseError, ResponseSuccess, ResponseSuccessWithCode } from "../utils/mapResponse";
+import { IRegisterDevice } from "@Interface/mqttClient.interface";
 
 export async function RegisterClient(req: Request, res: Response) {
   //Get data from req
@@ -46,7 +47,6 @@ export async function GetClientStatusByUser(req: Request, res: Response) {
   if ("error" in resClientAll) {
     return ResponseError(res, "fail to get client", resClientAll?.error);
   }
- 
 
   //Process
   const result: { client_id: string; connected: boolean }[] = [];

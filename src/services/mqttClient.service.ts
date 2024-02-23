@@ -3,6 +3,7 @@ import API from "../configs/axios";
 import { ApiError, DBError } from "../interface/errors";
 import { MqttClient, MqttClientModel } from "../model/mqttClient.model";
 import { MapAPIError, MapDBError } from "../utils/mapValue";
+import { IRegisterDevice } from "@Interface/mqttClient.interface";
 
 export async function CreateDevice(userId: number, formData: IRegisterDevice): Promise<DBError | MqttClientModel> {
   try {

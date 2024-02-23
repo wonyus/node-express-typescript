@@ -11,5 +11,3 @@ export const JRegisterClientSchema = Joi.object({
   switch_amount: Joi.number().required().min(1),
   type: Joi.string().required().min(1),
 });
-
-export default IRegisterDevice;
