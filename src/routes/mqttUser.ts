@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { GetClientStatusByUser, RegisterClient } from "../controller/mqttClient.controller";
+import { GetClientStatusByUser, RegisterClient } from "../controller/mqttDevice.controller";
 import RequireAuth from "../middleware/requireAuth";
 import validateBody from "../middleware/validateBody";
 import { JRegisterClientSchema } from "../interface/mqttDevice.interface";
