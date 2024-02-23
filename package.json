@@ -10,7 +10,9 @@
     "run-test": "npx ts-node ./index.ts",
     "swagger-autogen": "node ./swagger.js",
     "preci": "rm -rf node_modules",
-    "ci": "yarn install --frozen-lockfile"
+    "ci": "yarn install --frozen-lockfile",
+    "lint": "eslint . --ext .ts --ext .js",
+    "lint-fix": "eslint --fix"
   },
   "dependencies": {
     "@types/node": "^20.11.17",
@@ -46,8 +48,10 @@
     "@types/swagger-ui-express": "^4.1.3",
     "@types/validator": "^13.7.17",
     "concurrently": "^8.2.0",
+    "eslint": "^8.56.0",
     "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-simple-import-sort": "^12.0.0",
     "nodemon": "^3.0.1",
     "swagger-autogen": "^2.23.5",
     "ts-node": "^10.9.2"

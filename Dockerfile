@@ -8,7 +8,7 @@ WORKDIR /app
 COPY . .
 
 # Set NODE_ENV to 'production'
-# ENV NODE_ENV production
+ENV NODE_ENV production
 
 # Install project dependencies using Yarn in the builder stage
 RUN yarn preci
@@ -34,8 +34,8 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/src/swagger ./src/swagger
 
 # Expose the port your application will run on (if applicable)
-EXPOSE 4000
-
+EXPOSE 4000/tcp
+EXPOSE 4001/tcp
 
 # Define the command to run your application in the runner stage
 CMD ["node", "dist/index.js"]

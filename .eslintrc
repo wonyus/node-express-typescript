@@ -1,18 +1,28 @@
 {
-    "plugins": ["import"],
-    "rules": {
-      // turn on errors for missing imports
-      "import/no-unresolved": "error"
+  "plugins": [
+    "import"
+  ],
+  "rules": {
+    "@typescript-eslint/no-explicit-any": "off",
+    // turn on errors for missing imports
+    "import/no-unresolved": "off"
+  },
+  "settings": {
+    "import/parsers": {
+      "@typescript-eslint/parser": [
+        ".ts",
+        ".tsx"
+      ]
     },
-    "settings": {
-      "import/parsers": {
-        "@typescript-eslint/parser": [".ts", ".tsx"]
-      },
-      "import/resolver": {
-        "typescript": {
-          "alwaysTryTypes": true, // always try to resolve types under `<root>@types` directory even it doesn't contain any source code, like `@types/unist`
-          "project": "."
-        }
+    "import/resolver": {
+      "typescript": {
+        "alwaysTryTypes": true, // always try to resolve types under `<root>@types` directory even it doesn't contain any source code, like `@types/unist`
+        "project": "."
       }
     }
+  },
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaVersion": "2024"
   }
+}

@@ -84,6 +84,6 @@ io.on("connection", (socket) => {
   });
 });
 
-WsServer.listen(server_port + 1, () => {
-  logger.info("Socket server is running at http://localhost:" + (server_port + 1));
+WsServer.listen(process.env.SERVER_WS_PORT, () => {
+  logger.info("Socket server is running at http://localhost:" + (process.env.SERVER_WS_PORT));
 });

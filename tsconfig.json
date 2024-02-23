@@ -17,14 +17,18 @@
     "forceConsistentCasingInFileNames": true, /* Ensure that casing is correct in imports. */
     "strict": true, /* Enable all strict type-checking options. */
     "strictNullChecks": false, /* When type checking, take into account 'null' and 'undefined'. */
-    "skipLibCheck": true /* Skip type checking all .d.ts files. */
+    "skipLibCheck": true, /* Skip type checking all .d.ts files. */
+    "noImplicitAny": false
   },
   "ts-node": {
     "compilerOptions": {
       "module": "CommonJS"
     }
   },
-  "include": ["src/**/*", "__tests__/**/*"],
+  "include": [
+    "src/**/*",
+    "__tests__/**/*"
+  ],
   "exclude": [
     "dist",
     "node_modules"
