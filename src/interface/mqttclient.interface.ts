@@ -1,11 +1,9 @@
 import Joi from "joi";
 
-declare global {
-  export interface IRegisterDevice {
-    client_id: string;
-    switch_amount: number;
-    type: string;
-  }
+export interface IRegisterDevice {
+  client_id: string;
+  switch_amount: number;
+  type: string;
 }
 
 export const JRegisterClientSchema = Joi.object({
