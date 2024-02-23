@@ -4,7 +4,7 @@ import { decodeJWT } from "../utils/JWT";
 import { IRegisterSwitch } from "../interface/basicSwitch";
 import { CreateSwitch } from "../services/switch.service";
 import { ResponseError, ResponseSuccess, ResponseSuccessWithCode } from "../utils/mapResponse";
-import { IRegisterDevice } from "@Interface/mqttClient.interface";
+import { IRegisterDevice } from "../interface/mqttClient.interface";
 
 export async function RegisterClient(req: Request, res: Response) {
   //Get data from req
