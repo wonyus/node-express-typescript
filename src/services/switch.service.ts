@@ -42,3 +42,19 @@ export async function UpdateSwitch(id: string, formData: any): Promise<[affected
     return newError;
   }
 }
+
+export async function UpdateSwitches(updates: Array<{ id: string; formData: any }>): Promise<number | DBError> {
+  try {
+    const updatePromises = updates.map(async ({ id, formData }) => {
+      const response = await Switch.update({ ...formData }, { where: { id: id } });
+      return response[0];
+    });
+
+    const results = await Promise.all(updatePromises);
+    const totalAffectedCount = results.reduce((acc, affectedCount) => acc + affectedCount, 0);
+    return totalAffectedCount;
+  } catch (error: any) {
+    const newError: DBError = MapDBError(error);
+    return newError;
+  }
+}

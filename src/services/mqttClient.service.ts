@@ -34,3 +34,13 @@ export async function FindClientByUserId(userId: number): Promise<DBError | Mqtt
     return newError;
   }
 }
+
+export async function UpdateClientByClientId(clientId: number, formData: any): Promise<DBError | [affectedCount: number]> {
+  try {
+    const response = await MqttClient.update({ ...formData }, { where: { id: clientId } });
+    return response;
+  } catch (error: any) {
+    const newError: DBError = MapDBError(error);
+    return newError;
+  }
+}

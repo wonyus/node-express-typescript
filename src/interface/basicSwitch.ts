@@ -8,7 +8,7 @@ export interface ISwitchAction {
 export interface ISwitchData {
   mqtt_client_id: string;
   client_id: string;
-  switch_id: string;
+  switch_id: number;
   name: string;
   status: boolean;
 }

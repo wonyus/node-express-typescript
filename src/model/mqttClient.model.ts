@@ -5,6 +5,7 @@ import { User } from "./user.model";
 export interface MqttClientModel extends Model<InferAttributes<MqttClientModel>, InferCreationAttributes<MqttClientModel>> {
   id: CreationOptional<number>;
   uid: number;
+  name: string;
   client_id: string;
   type: string;
   status: string;
@@ -24,6 +25,10 @@ export const MqttClient = sequelize.define<MqttClientModel>(
         model: User,
         key: "id",
       },
+    },
+    name: {
+      type: DataTypes.STRING,
+      defaultValue: "New Device",
     },
     client_id: {
       unique: true,

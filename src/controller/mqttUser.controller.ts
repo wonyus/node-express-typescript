@@ -83,7 +83,7 @@ export const GetClientStatusByUser = async (req: Request, res: Response) => {
         name: sw.name,
         mqtt_client_id: sw.mqtt_client_id,
       }));
-      return { id: val.id, client_id: val.client_id, status_online: connected_status, data: data };
+      return { id: val.id, name: val.name, client_id: val.client_id, status_online: connected_status, data: data };
     });
     return res.status(200).json({ message: "success", result: result });
   } catch (error) {
