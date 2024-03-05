@@ -1,7 +1,7 @@
 import { Model, InferAttributes, InferCreationAttributes, DataTypes, CreationOptional } from "sequelize";
 import { sequelize } from "../configs/db.config";
-import { User } from "./user.model";
 import { MqttClient } from "./mqttClient.model";
+import { TSchedulerInitialValues } from "src/interface/basicSwitch";
 
 export interface SwitchModel extends Model<InferAttributes<SwitchModel>, InferCreationAttributes<SwitchModel>> {
   id: CreationOptional<number>;
@@ -9,6 +9,8 @@ export interface SwitchModel extends Model<InferAttributes<SwitchModel>, InferCr
   mqtt_client_id: string;
   name: string;
   status: boolean;
+  scheduler_active: boolean;
+  scheduler: TSchedulerInitialValues;
 }
 
 export const Switch = sequelize.define<SwitchModel>(
@@ -36,6 +38,14 @@ export const Switch = sequelize.define<SwitchModel>(
     },
     status: {
       type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    scheduler_active: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    scheduler: {
+      type: DataTypes.JSON,
     },
   },
   { tableName: "switch", paranoid: true }

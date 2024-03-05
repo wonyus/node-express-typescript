@@ -9,7 +9,10 @@ export async function UpdateSwitchDevice(req: Request, res: Response) {
 
   const switches = [];
   for (const switchData of reqData.data) {
-    switches.push({ id: switchData.switch_id, formData: { name: switchData.name } });
+    switches.push({
+      id: switchData.switch_id,
+      formData: { name: switchData.name, scheduler: switchData.scheduler, schedule_active: switchData.scheduler_active },
+    });
   }
 
   const switchesUpdated = await UpdateSwitches(switches);

@@ -82,6 +82,8 @@ export const GetClientStatusByUser = async (req: Request, res: Response) => {
         status: sw.status,
         name: sw.name,
         mqtt_client_id: sw.mqtt_client_id,
+        scheduler_active: sw.scheduler_active,
+        scheduler: sw.scheduler,
       }));
       return { id: val.id, name: val.name, client_id: val.client_id, status_online: connected_status, data: data };
     });

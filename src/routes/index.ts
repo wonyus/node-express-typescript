@@ -1,8 +1,8 @@
 import express, { Router } from "express";
-import UserRoute from "./user";
-import MqttClientRoute from "./mqttUser";
-import MqttWebhookRoute from "./webhook";
-import DeviceRoute from "./device";
+import UserRoute from "./user.routes";
+import MqttClientRoute from "./mqttUser.routes";
+import MqttWebhookRoute from "./webhook.routes";
+import DeviceRoute from "./device.routes";
 
 const router = Router();
 router.use(express.json());

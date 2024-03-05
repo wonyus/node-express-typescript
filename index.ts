@@ -24,12 +24,12 @@ const io = new Server(WsServer, {
   },
 });
 
-app.use(cors(
-  {
+app.use(
+  cors({
     origin: "*",
     methods: ["GET", "POST"],
-  }
-));
+  })
+);
 
 app.use(expresssession({ secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: false }));
 app.use(passport.initialize());
@@ -40,12 +40,11 @@ io.engine.use((req: Request, res: Response, next: () => void) => {
   next();
 });
 
-io.engine.use(expresssession({ secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: false }))
+io.engine.use(expresssession({ secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: false }));
 io.engine.use(passport.initialize());
 io.engine.use(passport.session());
 io.engine.use(morgan(":method :url :status :res[content-length] - :response-time ms"));
 PassportJwt(passport);
-
 
 app.route("/health").get((req: Request, res: Response) => {
   res.status(200).json({ message: "success" });
@@ -69,7 +68,7 @@ app.use("*", (_, res, next) => {
   res.send("Make sure url is correct!!!");
 });
 
-sync({}).then(() => {
+sync({ alter: true }).then(() => {
   const server = app.listen(server_port, () => {
     const addr = server.address();
     const bind = typeof addr === "string" ? `pipe ${addr}` : `${addr?.port}`;
@@ -85,5 +84,5 @@ io.on("connection", (socket) => {
 });
 
 WsServer.listen(process.env.SERVER_WS_PORT, () => {
-  logger.info("Socket server is running at http://localhost:" + (process.env.SERVER_WS_PORT));
+  logger.info("Socket server is running at http://localhost:" + process.env.SERVER_WS_PORT);
 });
