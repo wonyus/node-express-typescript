@@ -48,5 +48,5 @@ export const Switch = sequelize.define<SwitchModel>(
       type: DataTypes.JSON,
     },
   },
-  { tableName: "switch", paranoid: true }
+  { tableName: "switchs", paranoid: true }
 );

@@ -4,9 +4,9 @@ const DB_URL: any = process.env.DB_URL;
 export const sequelize = new Sequelize(DB_URL, {
   define: {
     timestamps: true,
-    createdAt: "create_date",
-    updatedAt: "update_date",
-    deletedAt: "delete_date",
+    createdAt: "created_date",
+    updatedAt: "updated_date",
+    deletedAt: "deleted_date",
   },
   pool: {
     max: 5,
