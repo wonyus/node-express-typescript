@@ -79,6 +79,7 @@ export const GetClientStatusByUser = async (req: Request, res: Response) => {
       const data: ISwitchData[] = val.switchs.map((sw: any) => ({
         client_id: val.client_id,
         switch_id: sw.id,
+        uuid: sw.uuid,
         status: sw.status,
         name: sw.name,
         mqtt_client_id: sw.mqtt_client_id,

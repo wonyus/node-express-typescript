@@ -16,6 +16,7 @@ export interface ISwitchData {
   client_id: string;
   switch_id: number;
   status: boolean;
+  uuid: string;
   name: string;
   mqtt_client_id: string;
   scheduler_active: boolean;

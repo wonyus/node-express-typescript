@@ -7,6 +7,7 @@ export interface SwitchModel extends Model<InferAttributes<SwitchModel>, InferCr
   id: CreationOptional<number>;
   client_id: number;
   mqtt_client_id: string;
+  uuid: string;
   name: string;
   status: boolean;
   scheduler_active: boolean;
@@ -32,6 +33,11 @@ export const Switch = sequelize.define<SwitchModel>(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    uuid: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      allowNull: false,
+    },
     name: {
       type: DataTypes.STRING,
       defaultValue: "switch",
@@ -48,5 +54,5 @@ export const Switch = sequelize.define<SwitchModel>(
       type: DataTypes.JSON,
     },
   },
-  { tableName: "switchs", paranoid: true }
+  { tableName: "switchs", paranoid: true, indexes: [{ unique: true, fields: ["uuid"] }] }
 );
