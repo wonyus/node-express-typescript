@@ -19,6 +19,7 @@ export const JSwitchDeviceSchema = Joi.object({
       Joi.object({
         mqtt_client_id: Joi.string().required().min(1),
         client_id: Joi.string().required().min(1),
+        uuid: Joi.string().required().min(1),
         switch_id: Joi.number().required().min(1),
         name: Joi.string().required().min(1),
         status: Joi.boolean().required(),
