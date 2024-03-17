@@ -11,7 +11,7 @@ export async function UpdateSwitchDevice(req: Request, res: Response) {
   for (const switchData of reqData.data) {
     switches.push({
       id: switchData.switch_id,
-      formData: { name: switchData.name, scheduler: switchData.scheduler, schedule_active: switchData.scheduler_active },
+      formData: { name: switchData.name, scheduler: switchData.scheduler, scheduler_active: switchData.scheduler_active },
     });
   }
 
