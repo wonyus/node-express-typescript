@@ -27,7 +27,7 @@ export async function GetClientConnectByUser(username: string): Promise<ApiError
 
 export async function FindClientByUserId(userId: number): Promise<DBError | MqttClientModel[]> {
   try {
-    const client = await MqttClient.findAll({ where: { uid: userId } });
+    const client = await MqttClient.findAll({ where: { uid: userId }, order: [["created_date", "DESC"]] });
     return client;
   } catch (error: any) {
     const newError: DBError = MapDBError(error);

@@ -15,7 +15,7 @@ export async function CreateSwitch(formData: IRegisterSwitch[]): Promise<SwitchM
 
 export async function GetSwitchByClientId(client_id: string): Promise<SwitchModel[] | null | DBError> {
   try {
-    const response = await Switch.findAll({ where: { client_id: client_id } });
+    const response = await Switch.findAll({ where: { client_id: client_id }, order: [["created_date", "DESC"]] });
     return response;
   } catch (error: any) {
     const newError: DBError = MapDBError(error);
