@@ -15,6 +15,16 @@ export async function CreateDevice(userId: number, formData: IRegisterDevice): P
   }
 }
 
+export async function DeleteDevice(clientId: number): Promise<DBError | Number> {
+  try {
+    const response = await MqttClient.destroy({ where: { id: clientId } });
+    return response;
+  } catch (error: any) {
+    const newError: DBError = MapDBError(error);
+    return newError;
+  }
+}
+
 export async function GetClientConnectByUser(username: string): Promise<ApiError | AxiosResponse<any, any>> {
   try {
     const response = await API.get(`/clients?username=${username}`);

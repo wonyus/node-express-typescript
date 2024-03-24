@@ -11,3 +11,11 @@ export const JRegisterClientSchema = Joi.object({
   switch_amount: Joi.number().required().min(1),
   type: Joi.string().required().min(1),
 });
+
+export interface IDeleteDevice {
+  client_id: number;
+}
+
+export const JDeleteDeviceSchema = Joi.object({
+  client_id: Joi.number().required().min(1),
+});

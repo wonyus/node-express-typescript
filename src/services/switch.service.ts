@@ -13,6 +13,16 @@ export async function CreateSwitch(formData: IRegisterSwitch[]): Promise<SwitchM
   }
 }
 
+export async function DeleteSwitchByClientId(id: number): Promise<Number | DBError> {
+  try {
+    const response = await Switch.destroy({ where: { client_id: id } });
+    return response;
+  } catch (error: any) {
+    const newError: DBError = MapDBError(error);
+    return newError;
+  }
+}
+
 export async function GetSwitchByClientId(client_id: string): Promise<SwitchModel[] | null | DBError> {
   try {
     const response = await Switch.findAll({ where: { client_id: client_id }, order: [["created_date", "DESC"]] });

@@ -1,18 +1,20 @@
+import { DBError } from "./../interface/errors";
 import { Request, Response } from "express";
-import { CreateDevice, FindClientByUserId, GetClientConnectByUser } from "../services/mqttClient.service";
+import { CreateDevice, DeleteDevice, FindClientByUserId, GetClientConnectByUser } from "../services/mqttClient.service";
 import { decodeJWT } from "../utils/JWT";
 import { IRegisterSwitch } from "../interface/basicSwitch";
-import { CreateSwitch } from "../services/switch.service";
+import { CreateSwitch, DeleteSwitchByClientId } from "../services/switch.service";
 import { ResponseError, ResponseSuccess, ResponseSuccessWithCode } from "../utils/mapResponse";
-import { IRegisterDevice } from "../interface/mqttDevice.interface";
+import { IDeleteDevice, IRegisterDevice } from "../interface/mqttDevice.interface";
+import { UserModel } from "src/model/user.model";
 
 export async function RegisterClient(req: Request, res: Response) {
   //Get data from req
-  const decode = decodeJWT(String(req.headers?.authorization).split(" ")[1]);
+  const user = req.user as UserModel;
   const regisFormdata: IRegisterDevice = req.body;
 
   //Process
-  const resData = await CreateDevice(decode.userId, regisFormdata);
+  const resData = await CreateDevice(user.id, regisFormdata);
   //validate and response
   if ("error" in resData) {
     return ResponseError(res, "fail to create device", resData?.error);
@@ -94,13 +96,39 @@ export async function RegisterClient(req: Request, res: Response) {
   return ResponseSuccessWithCode(res, 201, "created", resData);
 }
 
-export async function GetClientStatusByUser(req: Request, res: Response) {
+export async function DeleteClient(req: Request, res: Response) {
   //Get data from req
-  const decode = decodeJWT(String(req.headers?.authorization).split(" ")[1]);
+  const user = req.user as UserModel;
+  const body: IDeleteDevice = req.body;
 
   //Process
-  const resClientConn = await GetClientConnectByUser(decode.username);
-  const resClientAll = await FindClientByUserId(decode.userId);
+  const resData = await DeleteDevice(body.client_id);
+  //validate and response
+  if (!(typeof resData === "number")) {
+    if ("error" in resData) {
+      return ResponseError(res, "fail to delete device", resData.error);
+    }
+  }
+
+  const resSwitch = await DeleteSwitchByClientId(body.client_id);
+  //validate and response
+
+  if (!(typeof resSwitch === "number")) {
+    if ("error" in resSwitch) {
+      return ResponseError(res, "fail to delete switch", resSwitch?.error);
+    }
+  }
+
+  return ResponseSuccess(res, "deleted");
+}
+
+export async function GetClientStatusByUser(req: Request, res: Response) {
+  //Get data from req
+  const user = req.user as UserModel;
+
+  //Process
+  const resClientConn = await GetClientConnectByUser(user.username);
+  const resClientAll = await FindClientByUserId(user.id);
 
   //validate and response
   if ("error" in resClientConn) {
