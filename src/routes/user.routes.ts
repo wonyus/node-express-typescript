@@ -7,6 +7,7 @@ import usePassport from "../middleware/usePassport";
 import { GetClientStatusByUser } from "../controller/mqttUser.controller";
 import { SignInOAuth } from "../controller/oauth.controller"; // Fixed typo in controller import
 import { JSignInUserOAuthReqSchema } from "../interface/oauth.interface";
+import { GetDashboard } from "../controller/dashboard.controller";
 
 const router = Router();
 
@@ -19,5 +20,6 @@ router.post("/change_password", usePassport, validateBody(JChangePasswordUserReq
 router.post("/publish", usePassport, validateBody(JPublishReqSchema), PublishMessage);
 router.post("/publish/bulk", usePassport, validateBody(JPublishBulkReqSchema), PublishMessageBulk);
 router.get("/get_device_status", usePassport, GetClientStatusByUser);
+router.get("/get_dashboard", usePassport, GetDashboard);
 
 export default router;
