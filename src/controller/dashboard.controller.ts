@@ -41,15 +41,13 @@ export async function GetDashboard(req: Request, res: Response) {
         online.data.push(...val.switchs);
         online.count = online.count + val.switchs.length;
         val.switchs.forEach((sw: any) => {
-          sw.switchs.forEach((sws: any) => {
-            if (sws.status) {
-              active.data.push(val);
-              active.count++;
-            } else {
-              inactive.data.push(val);
-              inactive.count++;
-            }
-          });
+          if (sw.status) {
+            active.data.push(val);
+            active.count++;
+          } else {
+            inactive.data.push(val);
+            inactive.count++;
+          }
         });
       } else {
         offline.data.push(...val.switchs);
