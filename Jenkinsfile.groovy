@@ -1,3 +1,4 @@
+/* groovylint-disable-next-line CompileStatic */
 pipeline {
     agent any
 
@@ -6,6 +7,8 @@ pipeline {
         DOCKER_REGISTRY_CREDENTIALS = 'docker-credential'
         DOCKER_REGISTRY_URL = 'https://registry.hub.docker.com'
         DEPLOYMENT_FILE = '.kube/deployment.yaml'
+        DEPLOYMENT_NAME = 'linked-server'
+        NAME_SPACE = 'middleware'
     }
 
     stages {
@@ -26,6 +29,7 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
+                    /* groovylint-disable-next-line NestedBlockDepth */
                     withDockerRegistry(url: "${DOCKER_REGISTRY_URL}", credentialsId: "${DOCKER_REGISTRY_CREDENTIALS}") {
                         docker.image("${DOCKER_IMAGE_NAME}:${env.GIT_COMMIT}").push()
                         docker.image("${DOCKER_IMAGE_NAME}:latest").push()
@@ -36,7 +40,7 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                sh 'kubectl delete deployment linked -n linked'
+                sh "kubectl delete deployment ${DEPLOYMENT_NAME} -n ${NAME_SPACE}"
                 sh "kubectl apply -f ${DEPLOYMENT_FILE}"
             }
         }
@@ -52,6 +56,7 @@ pipeline {
     }
 }
 
+/* groovylint-disable-next-line FactoryMethodName, MethodParameterTypeRequired, MethodReturnTypeRequired, NoDef */
 def buildDockerImage(tag) {
     sh "docker build -t ${DOCKER_IMAGE_NAME}:${tag} -t ${DOCKER_IMAGE_NAME}:latest ."
 }
