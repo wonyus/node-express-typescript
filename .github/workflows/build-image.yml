@@ -2,17 +2,17 @@ name: build backend
 
 on:
   push:
-    branches: ["development"]
+    branches: ["developmenttt"]
     # paths: ["src/**", "package.json"]
 
 jobs:
   docker:
     runs-on: ubuntu-latest
-    
+
     steps:
       - id: commit
         uses: prompt/actions-commit-hash@v3
-        
+
       - name: Checkout
         uses: actions/checkout@v4
         # with:
@@ -22,7 +22,7 @@ jobs:
       - name: Get last tag
         id: get_last_tag
         run: echo "GIT_TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
-  
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
