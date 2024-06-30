@@ -1,11 +1,9 @@
-import { DBError } from "./../interface/errors";
 import { Request, Response } from "express";
-import { CreateDevice, DeleteDevice, FindClientByUserId, GetClientConnectByUser } from "../services/mqttClient.service";
-import { decodeJWT } from "../utils/JWT";
-import { IRegisterSwitch } from "../interface/basicSwitch";
-import { CreateSwitch, DeleteSwitchByClientId } from "../services/switch.service";
-import { ResponseError, ResponseSuccess, ResponseSuccessWithCode } from "../utils/mapResponse";
-import { IDeleteDevice, IRegisterDevice } from "../interface/mqttDevice.interface";
+import { CreateDevice, DeleteDevice, FindClientByUserId, GetClientConnectByUser } from "../../services/mqttClient.service";
+import { IRegisterSwitch } from "../../interface/basicSwitch";
+import { CreateSwitch, DeleteSwitchByClientId } from "../../services/switch.service";
+import { ResponseError, ResponseSuccess, ResponseSuccessWithCode } from "../../utils/mapResponse";
+import { IDeleteDevice, IRegisterDevice } from "../../interface/mqttDevice.interface";
 import { UserModel } from "src/model/user.model";
 
 export async function RegisterClient(req: Request, res: Response) {

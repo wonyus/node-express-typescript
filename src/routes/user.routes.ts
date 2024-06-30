@@ -1,11 +1,19 @@
 import { Router } from "express";
 import validateBody from "../middleware/validateBody";
-import { ChangePasswordUser, GetUserInfo, PublishMessage, PublishMessageBulk, RefreshToken, SignIn, Signup } from "../controller/user.controller";
+import {
+  ChangePasswordUser,
+  GetUserInfo,
+  PublishMessage,
+  PublishMessageBulk,
+  RefreshToken,
+  SignIn,
+  Signup,
+} from "../controller/users/user.controller";
 import { JChangePasswordUserReqSchema, JCreateUserReqSchema, JSignInUserReqSchema } from "../interface/user.interface";
 import { JPublishBulkReqSchema, JPublishReqSchema } from "../interface/publish.interface";
 import usePassport from "../middleware/usePassport";
-import { GetClientStatusByUser } from "../controller/mqttUser.controller";
-import { SignInOAuth } from "../controller/oauth.controller"; // Fixed typo in controller import
+import { GetClientStatusByUser } from "../controller/mqtt/mqttUser.controller";
+import { SignInOAuth } from "../controller/users/oauth.controller"; // Fixed typo in controller import
 import { JSignInUserOAuthReqSchema } from "../interface/oauth.interface";
 import { GetDashboard } from "../controller/dashboard.controller";
 

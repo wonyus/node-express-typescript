@@ -1,15 +1,15 @@
 import { Request, Response } from "express";
-import { ISignInUserOAuthReq } from "../interface/oauth.interface";
-import { CreateUser, CreateUserOAuth, FindOneUserOAuth, UpdateUserOAuth } from "../services/user.service";
-import { CreateMqttUser } from "../services/mqttUser.service";
-import { generateAccessJWT, generateRefreshJWT } from "../utils/JWT";
+import { ISignInUserOAuthReq } from "../../interface/oauth.interface";
+import { CreateUser, CreateUserOAuth, FindOneUserByOAuth, UpdateUserOAuth } from "../../services/user.service";
+import { CreateMqttUser } from "../../services/mqttUser.service";
+import { generateAccessJWT, generateRefreshJWT } from "../../utils/JWT";
 
 export async function SignInOAuth(req: Request, res: Response) {
   //Get data req
   const formData: ISignInUserOAuthReq = req.body;
 
   //get user
-  const user = await FindOneUserOAuth(formData.username, formData.provider);
+  const user = await FindOneUserByOAuth(formData.username, formData.provider);
   let userRes: any;
   //if not exist, create new user
   if (user == null) {

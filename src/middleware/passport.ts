@@ -1,5 +1,5 @@
 import { Strategy, ExtractJwt } from "passport-jwt";
-import { FindOneUser } from "../services/user.service";
+import { FindOneUserByUserName } from "../services/user.service";
 import { PassportStatic } from "passport";
 
 const PassportJwt = (passport: PassportStatic) => {
@@ -10,7 +10,7 @@ const PassportJwt = (passport: PassportStatic) => {
 
   passport.use(
     new Strategy(opts, (jwtPayload, done) => {
-      FindOneUser(jwtPayload.username)
+      FindOneUserByUserName(jwtPayload.username)
         .then((user: any) => {
           if (user) {
             return done(null, user.dataValues);
