@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { DeleteClient, GetClientStatusByUser, RegisterClient } from "../controller/mqttDevice.controller";
+import { DeleteClient, GetClientStatusByUser, RegisterClient } from "../controller/mqtt/mqttDevice.controller";
 import validateBody from "../middleware/validateBody";
 import { JDeleteDeviceSchema, JRegisterClientSchema } from "../interface/mqttDevice.interface";
 import { JChangePasswordMqttUserReqSchema } from "../interface/mqttUser.interface";
-import { ChangePasswordMqttUser } from "../controller/mqttUser.controller";
+import { ChangePasswordMqttUser } from "../controller/mqtt/mqttUser.controller";
 import usePassport from "../middleware/usePassport";
 
 const router = Router();

@@ -83,9 +83,9 @@ export async function SignInUser(username: string): Promise<UserModel | DBError>
   }
 }
 
-export async function GetUserById(id: string) {
+export async function FindOneUserById(id: string) {
   try {
-    const response = await User.findOne({ where: { username: id } });
+    const response = await User.findOne({ where: { id: id } });
     return response;
   } catch (error: any) {
     const newError: DBError = MapDBError(error);
@@ -93,7 +93,7 @@ export async function GetUserById(id: string) {
   }
 }
 
-export async function FindOneUser(username: string) {
+export async function FindOneUserByUserName(username: string) {
   try {
     const response = await User.findOne({ attributes: ["id", "name", "username", "profile_url", "signin_type"], where: { username: username } });
     return response;
@@ -103,7 +103,7 @@ export async function FindOneUser(username: string) {
   }
 }
 
-export async function FindOneUserOAuth(username: string, provider: string) {
+export async function FindOneUserByOAuth(username: string, provider: string) {
   try {
     const response = await User.findOne({
       attributes: ["id", "o_id", "name", "username", "profile_url", "signin_type", "provider"],

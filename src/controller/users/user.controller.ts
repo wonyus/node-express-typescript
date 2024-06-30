@@ -5,17 +5,17 @@ import {
   Publish,
   PublishBulk,
   SignInUser,
-  GetUserById,
-  FindOneUser,
+  FindOneUserById,
+  FindOneUserByUserName,
   ChangePassword,
-} from "../services/user.service";
-import { User, generateAccessJWT, generateRefreshJWT } from "../utils/JWT";
-import { encryptPassword, validatePassword } from "../utils/bcrypt";
-import { IChangePasswordUserReq, IChangePasswordUserSrv, ICreateUserReq, ISignInUserReq } from "../interface/user.interface";
-import { IPublishReq } from "../interface/publish.interface";
-import { CreateMqttUser } from "../services/mqttUser.service";
-import { UserModel } from "../model/user.model";
-import { ResponseErrorWithCode } from "../utils/mapResponse";
+} from "../../services/user.service";
+import { User, generateAccessJWT, generateRefreshJWT } from "../../utils/JWT";
+import { encryptPassword, validatePassword } from "../../utils/bcrypt";
+import { IChangePasswordUserReq, IChangePasswordUserSrv, ICreateUserReq, ISignInUserReq } from "../../interface/user.interface";
+import { IPublishReq } from "../../interface/publish.interface";
+import { CreateMqttUser } from "../../services/mqttUser.service";
+import { UserModel } from "../../model/user.model";
+import { ResponseErrorWithCode } from "../../utils/mapResponse";
 
 export async function Signup(req: Request, res: Response) {
   // encryptPassword
@@ -29,7 +29,7 @@ export async function Signup(req: Request, res: Response) {
     is_superuser: Boolean(req.body.is_superuser),
   };
 
-  const checkUser = await FindOneUser(userFormData.username);
+  const checkUser = await FindOneUserByUserName(userFormData.username);
   if (checkUser != null) {
     return ResponseErrorWithCode(res, 500, "Bad Request", "username is already");
   }
@@ -80,7 +80,7 @@ export async function RefreshToken(req: Request, res: Response) {
   const user = req.user as UserModel;
 
   //get user
-  const userRes: any = await FindOneUser(user.username);
+  const userRes: any = await FindOneUserByUserName(user.username);
   const userData: User = {
     id: String(user.id),
     username: user.username,
@@ -159,7 +159,8 @@ export async function ChangePasswordUser(req: Request, res: Response) {
   const formData: IChangePasswordUserReq = req.body;
 
   //Get User info
-  const user: any = await GetUserById(String(userData.id));
+  const user: any = await FindOneUserById(String(userData.id));
+  console.log(user);
 
   //validate password
   const validate = await validatePassword(formData.old_password, user.password);
