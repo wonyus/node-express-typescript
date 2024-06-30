@@ -1,14 +1,14 @@
 /* groovylint-disable-next-line CompileStatic */
 pipeline {
-    agent any
+    agent { label 'NODE_BATCH' }
 
     environment {
         DOCKER_IMAGE_NAME = 'wonyus/node-emqx'
-        DOCKER_REGISTRY_CREDENTIALS = 'docker-credential'
+        DOCKER_REGISTRY_CREDENTIALS = 'docker-hub-wonyus'
         DOCKER_REGISTRY_URL = 'https://registry.hub.docker.com'
         DEPLOYMENT_FILE = '.kube/deployment.yaml'
         DEPLOYMENT_NAME = 'linked-server'
-        NAME_SPACE = 'middleware'
+        NAMESPACE = 'linked'
     }
 
     stages {
@@ -40,7 +40,7 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                sh "kubectl delete deployment ${DEPLOYMENT_NAME} -n ${NAME_SPACE}"
+                sh "kubectl delete deployment ${DEPLOYMENT_NAME} -n ${NAMESPACE}"
                 sh "kubectl apply -f ${DEPLOYMENT_FILE}"
             }
         }
